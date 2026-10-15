@@ -1,0 +1,32 @@
+# Composer dependencies
+/vendor/
+/web/core/
+/web/modules/contrib/
+/web/themes/contrib/
+/web/profiles/contrib/
+/web/libraries/
+
+# Drupal generated files
+/web/sites/*/files/
+/web/sites/*/settings.local.php
+/web/sites/*/settings.codespaces.php
+/web/sites/*/services.local.yml
+
+# Drupal installation secrets
+/web/sites/*/settings.php
+/web/sites/*/services.yml
+
+# DDEV local/generated configuration
+/.ddev/.dbimageBuild/
+/.ddev/.webimageBuild/
+/.ddev/.downloads/
+/.ddev/db_snapshots/
+/.ddev/config.local.yaml/
+
+# Environment and editor files
+.env
+.env.*
+!.env.example
+.vscode/
+.idea/
+.DS_Store

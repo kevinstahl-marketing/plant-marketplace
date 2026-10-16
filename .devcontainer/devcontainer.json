@@ -1,0 +1,13 @@
+{
+  "name": "Plant Marketplace — Drupal",
+  "image": "mcr.microsoft.com/devcontainers/universal:2",
+  "postCreateCommand": "bash .devcontainer/install-ddev.sh",
+  "postStartCommand": "bash .devcontainer/start-ddev.sh",
+  "forwardPorts": [80],
+  "portsAttributes": {
+    "80": {
+      "label": "Drupal Storefront",
+      "onAutoForward": "notify"
+    }
+  }
+}

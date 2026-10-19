@@ -1,0 +1,6 @@
+services:
+  shopify_connector.admin_api:
+    class: Drupal\shopify_connector\Service\ShopifyAdminApiClient
+    arguments:
+      - '@http_client'
+      - '@state'

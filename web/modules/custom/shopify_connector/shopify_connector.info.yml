@@ -1,0 +1,5 @@
+name: 'Shopify Marketplace Connector'
+type: module
+description: 'Connects Drupal Commerce to authorized Shopify stores.'
+package: Custom
+core_version_requirement: ^11

@@ -1,0 +1,17 @@
+shopify_connector.authorize:
+  path: '/shopify/oauth/authorize'
+  defaults:
+    _controller: '\Drupal\shopify_connector\Controller\ShopifyAuthorizeController::authorize'
+    _title: 'Authorize Shopify'
+  requirements:
+    _permission: 'administer site configuration'
+
+shopify_connector.oauth_callback:
+  path: '/shopify/oauth/callback'
+  defaults:
+    _controller: '\Drupal\shopify_connector\Controller\ShopifyOAuthCallbackController::callback'
+    _title: 'Shopify OAuth Callback'
+  requirements:
+    _access: 'TRUE'
+  options:
+    no_cache: TRUE

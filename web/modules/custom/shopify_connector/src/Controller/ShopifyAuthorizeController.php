@@ -10,28 +10,43 @@ final class ShopifyAuthorizeController extends ControllerBase {
   public function authorize(): TrustedRedirectResponse {
     $shop = getenv('SHOPIFY_STORE_DOMAIN');
     $clientId = getenv('SHOPIFY_CLIENT_ID');
+    $redirectUri = getenv('SHOPIFY_REDIRECT_URI');
 
-    if (!$shop || !$clientId) {
-      throw new \RuntimeException('Shopify environment variables missing.');
+    if (!$shop || !$clientId || !$redirectUri) {
+      throw new \RuntimeException(
+        'Missing Shopify OAuth environment variables.'
+      );
     }
 
-    // Generate a secure OAuth state token.
+    // Validate the configured Shopify domain.
+    if (!preg_match(
+      '/^[a-zA-Z0-9][a-zA-Z0-9-]*\.myshopify\.com$/',
+      $shop
+    )) {
+      throw new \RuntimeException('Invalid Shopify store domain.');
+    }
+
+    // Require an HTTPS callback URL.
+    if (!filter_var($redirectUri, FILTER_VALIDATE_URL)
+      || parse_url($redirectUri, PHP_URL_SCHEME) !== 'https') {
+      throw new \RuntimeException('Invalid Shopify redirect URI.');
+    }
+
+    // Generate a cryptographically secure OAuth state token.
     $state = bin2hex(random_bytes(32));
 
-    // Store state for callback verification.
+    // Save state for verification in the OAuth callback.
     \Drupal::service('tempstore.private')
       ->get('shopify_connector')
       ->set('oauth_state', $state);
 
-    // Our public Codespaces OAuth callback.
-    $redirectUri = 'https://supreme-space-orbit-x5jq695vxxjq36gpr-80.app.github.dev/shopify/oauth/callback';
-
+    // Request Shopify Admin API permissions.
     $query = http_build_query([
       'client_id' => $clientId,
       'scope' => 'read_products,read_inventory,read_locations',
       'redirect_uri' => $redirectUri,
       'state' => $state,
-    ]);
+    ], '', '&', PHP_QUERY_RFC3986);
 
     return new TrustedRedirectResponse(
       "https://{$shop}/admin/oauth/authorize?{$query}"

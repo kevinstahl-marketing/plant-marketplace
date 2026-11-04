@@ -1,0 +1,9 @@
+global:
+  css:
+    base:
+      css/tokens.css: {}
+      css/base.css: {}
+    theme:
+      css/global.css: {}
+  js:
+    js/global.js: {}

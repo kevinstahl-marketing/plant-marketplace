@@ -1,0 +1,23 @@
+<div class="site-wrapper">
+
+  {% if page.header %}
+    <header class="site-header" role="banner">
+      <div class="container">
+        {{ page.header }}
+      </div>
+    </header>
+  {% endif %}
+
+  <main id="main-content" class="site-main">
+    {{ page.content }}
+  </main>
+
+  {% if page.footer %}
+    <footer class="site-footer" role="contentinfo">
+      <div class="container">
+        {{ page.footer }}
+      </div>
+    </footer>
+  {% endif %}
+
+</div>

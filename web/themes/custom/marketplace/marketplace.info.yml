@@ -1,0 +1,11 @@
+name: Plant Marketplace
+type: theme
+description: 'Custom storefront theme for Plant Marketplace.'
+core_version_requirement: ^11
+base theme: stable9
+libraries:
+  - marketplace/global
+regions:
+  header: Header
+  content: Content
+  footer: Footer

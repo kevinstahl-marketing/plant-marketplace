@@ -1,0 +1,27 @@
+name: Marketplace Hero
+description: 'A reusable storefront hero with a headline and call to action.'
+status: stable
+
+props:
+  type: object
+  properties:
+    heading:
+      type: string
+      title: Heading
+      examples:
+        - Grow Something Extraordinary
+    description:
+      type: string
+      title: Description
+      examples:
+        - Discover plants, seeds, and everything you need to grow.
+    button_text:
+      type: string
+      title: Button text
+      examples:
+        - Explore Plants
+    button_url:
+      type: string
+      title: Button URL
+      examples:
+        - /shop

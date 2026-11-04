@@ -1,0 +1,25 @@
+<section class="marketplace-hero">
+  <div class="container marketplace-hero__inner">
+
+    <div class="marketplace-hero__content">
+      {% if heading %}
+        <h1 class="marketplace-hero__heading">
+          {{ heading }}
+        </h1>
+      {% endif %}
+
+      {% if description %}
+        <p class="marketplace-hero__description">
+          {{ description }}
+        </p>
+      {% endif %}
+
+      {% if button_text and button_url %}
+        <a class="marketplace-hero__button" href="{{ button_url }}">
+          {{ button_text }}
+        </a>
+      {% endif %}
+    </div>
+
+  </div>
+</section>

@@ -8,6 +8,24 @@
     </header>
   {% endif %}
 
+  {% if page.highlighted %}
+    <div class="site-messages container">
+      {{ page.highlighted }}
+    </div>
+  {% endif %}
+
+  {% if page.breadcrumb %}
+    <nav class="site-breadcrumb container" aria-label="Breadcrumb">
+      {{ page.breadcrumb }}
+    </nav>
+  {% endif %}
+
+  {% if page.admin %}
+    <div class="site-admin container">
+      {{ page.admin }}
+    </div>
+  {% endif %}
+
   <main id="main-content" class="site-main">
     {{ page.content }}
   </main>

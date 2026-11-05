@@ -1,0 +1,95 @@
+/* =========================================
+   HEADER — Shell
+   ========================================= */
+
+.site-header-area {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header, 100);
+  padding: 16px var(--page-gutter);
+}
+
+.site-header {
+  max-width: var(--container-width);
+  margin-inline: auto;
+
+  background: var(--glass-background);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl, 20px);
+
+  backdrop-filter: blur(16px);
+  box-shadow: var(--shadow-sm);
+}
+
+.site-header-inner {
+  padding: 16px 24px;
+}
+
+/* =========================================
+   HEADER — Drupal Block Layout
+   ========================================= */
+
+.site-header-inner > div {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 32px;
+}
+
+/* Brand */
+
+#block-marketplace-site-branding {
+  justify-self: start;
+}
+
+/* Main navigation */
+
+#block-marketplace-main-menu {
+  justify-self: center;
+}
+
+/* Account / actions */
+
+#block-marketplace-account-menu {
+  justify-self: end;
+}
+
+/* =========================================
+   HEADER — Navigation
+   ========================================= */
+
+.site-header nav ul {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.site-header nav a {
+  color: var(--color-text);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.site-header nav a:hover {
+  color: var(--color-primary);
+}
+
+/* =========================================
+   HEADER — Responsive
+   ========================================= */
+
+@media (max-width: 768px) {
+  .site-header-inner > div {
+    grid-template-columns: 1fr auto;
+    gap: 16px;
+  }
+
+  #block-marketplace-main-menu {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-self: center;
+  }
+}

@@ -1,41 +1,41 @@
+
 <div class="site-wrapper">
 
-  {% if page.header %}
-    <header class="site-header" role="banner">
-      <div class="container">
-        {{ page.header }}
-      </div>
-    </header>
-  {% endif %}
+    {% if page.header %}
+        {{ include('marketplace:header', {
+        content: page.header
+        }, with_context = false) }}
+    {% endif %}
 
-  {% if page.highlighted %}
-    <div class="site-messages container">
-      {{ page.highlighted }}
-    </div>
-  {% endif %}
 
-  {% if page.breadcrumb %}
-    <nav class="site-breadcrumb container" aria-label="Breadcrumb">
-      {{ page.breadcrumb }}
-    </nav>
-  {% endif %}
+    {% if page.highlighted %}
+        <div class="site-messages container">
+            {{ page.highlighted }}
+        </div>
+    {% endif %}
 
-  {% if page.admin %}
-    <div class="site-admin container">
-      {{ page.admin }}
-    </div>
-  {% endif %}
+    {% if page.breadcrumb %}
+        <nav class="site-breadcrumb container" aria-label="Breadcrumb">
+            {{ page.breadcrumb }}
+        </nav>
+    {% endif %}
 
-  <main id="main-content" class="site-main">
-    {{ page.content }}
-  </main>
+    {% if page.admin %}
+        <div class="site-admin container">
+            {{ page.admin }}
+        </div>
+    {% endif %}
 
-  {% if page.footer %}
-    <footer class="site-footer" role="contentinfo">
-      <div class="container">
-        {{ page.footer }}
-      </div>
-    </footer>
-  {% endif %}
+    <main id="main-content" class="site-main">
+        {{ page.content }}
+    </main>
+
+    {% if page.footer %}
+        <footer class="site-footer" role="contentinfo">
+            <div class="container">
+                {{ page.footer }}
+            </div>
+        </footer>
+    {% endif %}
 
 </div>

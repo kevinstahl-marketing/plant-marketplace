@@ -1,0 +1,13 @@
+
+name: Header
+description: 'Global storefront header.'
+status: stable
+
+slots:
+  content:
+    title: Header content
+    description: 'Drupal branding, navigation, and account blocks.'
+
+libraryDependencies:
+  - core/drupal
+  - core/once

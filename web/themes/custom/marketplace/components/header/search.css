@@ -1,0 +1,82 @@
+/* =========================================
+   HEADER — Real Drupal Search Form
+   ========================================= */
+
+#block-marketplace-searchform form {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  padding: 5px;
+  margin: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface-muted);
+  transition:
+    background 200ms ease,
+    border-color 200ms ease,
+    box-shadow 200ms ease;
+}
+
+#block-marketplace-searchform form:focus-within {
+  background: #fff;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(40, 89, 67, 0.1);
+}
+
+#block-marketplace-searchform .form-item {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+}
+
+#block-marketplace-searchform input[type="search"] {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  padding: 9px 14px;
+  margin: 0;
+  border: 0;
+  border-radius: 999px;
+  outline: 0;
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  font-size: 0.875rem;
+}
+
+#block-marketplace-searchform input[type="search"]:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+#block-marketplace-searchform input[type="submit"] {
+  flex-shrink: 0;
+  padding: 10px 18px;
+  margin: 0;
+  border: 0;
+  border-radius: 999px;
+  background: var(--color-primary);
+  color: #fff;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 200ms ease;
+}
+
+#block-marketplace-searchform input[type="submit"]:hover {
+  background: var(--color-primary-dark);
+}
+
+@media (max-width: 480px) {
+#block-marketplace-searchform input[type="search"] {
+    padding: 9px 10px;
+    font-size: 0.8125rem;
+  }
+
+#block-marketplace-searchform input[type="submit"] {
+    padding: 9px 12px;
+    font-size: 0.75rem;
+  }
+}

@@ -1,0 +1,15 @@
+{#
+/**
+ * @file
+ * Header region wrapper.
+ *
+ * Drupal Block Layout controls the blocks inside.
+ * The Header SDC controls the surrounding presentation.
+ */
+#}
+
+{% if content %}
+  <div class="site-header__blocks">
+    {{ content }}
+  </div>
+{% endif %}

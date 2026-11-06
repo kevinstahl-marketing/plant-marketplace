@@ -1,0 +1,38 @@
+/* =========================================
+   HEADER — Drupal Main Navigation
+   ========================================= */
+
+#block-marketplace-main-menu {
+  min-width: 0;
+}
+
+#block-marketplace-main-menu ul {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px 28px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+#block-marketplace-main-menu a {
+  color: var(--color-text);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color 180ms ease;
+}
+
+#block-marketplace-main-menu a:hover,
+#block-marketplace-main-menu a.is-active {
+  color: var(--color-primary);
+}
+
+@media (max-width: 480px) {
+  #block-marketplace-main-menu ul {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+}

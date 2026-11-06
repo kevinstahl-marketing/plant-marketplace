@@ -1,0 +1,54 @@
+/* =========================================
+   HEADER — Shop Categories
+   ========================================= */
+
+#block-marketplace-shop-categories {
+  grid-column: 1 / -1;
+  grid-row: 3;
+  width: 100%;
+  min-width: 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--color-border);
+}
+
+#block-marketplace-shop-categories ul {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px 32px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+#block-marketplace-shop-categories a,
+#block-marketplace-shop-categories .nolink {
+  color: var(--color-text);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: color 180ms ease;
+}
+
+#block-marketplace-shop-categories a:hover,
+#block-marketplace-shop-categories a.is-active {
+  color: var(--color-primary);
+}
+
+@media (max-width: 900px) {
+  #block-marketplace-shop-categories {
+    grid-row: 4;
+  }
+
+  #block-marketplace-shop-categories ul {
+    gap: 12px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  #block-marketplace-shop-categories ul {
+    justify-content: flex-start;
+    gap: 12px 16px;
+  }
+}

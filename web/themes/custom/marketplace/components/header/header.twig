@@ -1,7 +1,76 @@
+
+{#
+/**
+ * @file
+ * Plant Marketplace header component.
+ *
+ * Drupal manages branding, navigation, search,
+ * and account blocks through the Header region.
+ *
+ * The component provides the visual shell,
+ * hamburger control, and cart placeholder.
+ */
+#}
+
 <div class="site-header-area">
   <header class="site-header" role="banner">
-    <div class="container site-header-inner">
-      {{ content }}
+    <div class="site-header-inner">
+      <div class="site-header__toolbar">
+
+        {# Hamburger navigation toggle #}
+        <button
+          class="site-header__menu-toggle"
+          type="button"
+          aria-label="Open navigation"
+          aria-expanded="false"
+          aria-controls="marketplace-navigation"
+        >
+          <span class="site-header__menu-icon" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+        </button>
+
+        {#
+          Drupal Header region.
+
+          Contains the configured blocks:
+          - Site branding
+          - Main navigation
+          - Search form
+          - User account menu
+
+          Individual block placement is managed
+          through Drupal's Block Layout UI.
+        #}
+        {{ content }}
+
+        {#
+          Temporary decorative cart icon.
+
+          Replace with a real commerce cart block
+          once the cart integration is implemented.
+        #}
+        <div class="site-header__cart" aria-hidden="true">
+          <svg
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            focusable="false"
+            aria-hidden="true"
+          >
+            <path d="M6 7h12l1 13H5L6 7Z" />
+            <path d="M9 9V6a3 3 0 0 1 6 0v3" />
+          </svg>
+        </div>
+
+      </div>
     </div>
   </header>
 </div>

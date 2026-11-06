@@ -1,0 +1,12 @@
+#block-marketplace-site-branding {
+  justify-self: start;
+}
+
+#block-marketplace-site-branding a {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+}

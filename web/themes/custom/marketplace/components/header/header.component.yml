@@ -1,4 +1,3 @@
-
 name: Header
 description: 'Global storefront header.'
 status: stable
@@ -6,7 +5,17 @@ status: stable
 slots:
   content:
     title: Header content
-    description: 'Drupal branding, navigation, and account blocks.'
+    description: 'Drupal-managed branding, navigation, search, account, and category blocks.'
+
+libraryOverrides:
+  css:
+    component:
+      header.css: {}
+      branding.css: {}
+      navigation.css: {}
+      account.css: {}
+      search.css: {}
+      categories.css: {}
 
 libraryDependencies:
   - core/drupal

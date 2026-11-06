@@ -11,3 +11,4 @@ global:
   dependencies:
     - core/drupal
     - core/once
+

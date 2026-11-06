@@ -1,0 +1,23 @@
+uuid: ada87e39-883d-4507-b1d8-37b88d8cf71a
+langcode: en
+status: true
+dependencies:
+  config:
+    - canvas.component.js.marketplace_hero
+    - canvas.component.marker.page_content
+    - canvas.component.sdc.marketplace.header
+    - canvas.component.sdc.marketplace.hero
+    - canvas.component.sdc.navigation.message
+    - canvas.component.sdc.navigation.title
+    - canvas.component.sdc.olivero.teaser
+name: Other
+configEntityTypeId: component
+weight: 0
+items:
+  - js.marketplace_hero
+  - marker.page_content
+  - sdc.marketplace.header
+  - sdc.marketplace.hero
+  - sdc.navigation.message
+  - sdc.navigation.title
+  - sdc.olivero.teaser

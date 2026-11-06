@@ -1,0 +1,25 @@
+uuid: 24a2753e-5d05-4617-bc59-b49c19092cf0
+langcode: en
+status: true
+dependencies:
+  config:
+    - system.menu.shop-categories
+  module:
+    - system
+  theme:
+    - marketplace
+id: marketplace_shop_categories
+theme: marketplace
+region: header
+weight: 0
+provider: null
+plugin: 'system_menu_block:shop-categories'
+settings:
+  id: 'system_menu_block:shop-categories'
+  label: 'Shop Categories'
+  label_display: '0'
+  provider: system
+  level: 1
+  depth: 0
+  expand_all_items: false
+visibility: {  }

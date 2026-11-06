@@ -1,0 +1,22 @@
+uuid: 90b1a7a9-a735-40d2-8b66-a95bd0caf091
+langcode: en
+status: true
+dependencies:
+  module:
+    - system
+  theme:
+    - marketplace
+_core:
+  default_config_hash: VhBzWb7lMRtIOg9G7VSw_0uopi-7zXeHq4vXqqV1HFE
+id: marketplace_breadcrumbs
+theme: marketplace
+region: breadcrumb
+weight: -5
+provider: null
+plugin: system_breadcrumb_block
+settings:
+  id: system_breadcrumb_block
+  label: Breadcrumbs
+  label_display: '0'
+  provider: system
+visibility: {  }

@@ -1,0 +1,8 @@
+uuid: 20eb8300-af32-46d7-9f06-a641fd9be8a0
+langcode: en
+status: true
+dependencies: {  }
+id: shop-categories
+label: 'Shop Categories'
+description: 'Storefront shopping categories.'
+locked: false

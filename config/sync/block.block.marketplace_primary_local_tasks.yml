@@ -1,0 +1,22 @@
+uuid: 517f9899-7aa1-4e65-8b26-a98f39cdd13a
+langcode: en
+status: true
+dependencies:
+  theme:
+    - marketplace
+_core:
+  default_config_hash: nGE3EoPQQaQCuqTUtZgw0-KIzmrqdKDzdNQf2JyPUt4
+id: marketplace_primary_local_tasks
+theme: marketplace
+region: admin
+weight: -5
+provider: null
+plugin: local_tasks_block
+settings:
+  id: local_tasks_block
+  label: 'Primary tabs'
+  label_display: '0'
+  provider: core
+  primary: true
+  secondary: false
+visibility: {  }

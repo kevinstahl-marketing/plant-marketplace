@@ -1,0 +1,21 @@
+uuid: ec19991a-cfda-4e53-90d1-6b47bcfe607e
+langcode: en
+status: true
+dependencies:
+  module:
+    - search
+  theme:
+    - marketplace
+id: marketplace_searchform
+theme: marketplace
+region: header
+weight: -1
+provider: null
+plugin: search_form_block
+settings:
+  id: search_form_block
+  label: 'Search form'
+  label_display: '0'
+  provider: search
+  page_id: node_search
+visibility: {  }

@@ -1,0 +1,27 @@
+uuid: 41010fd9-e730-420d-9413-2dea2860a9c6
+langcode: en
+status: false
+dependencies:
+  config:
+    - system.menu.shop-categories
+  module:
+    - system
+active_version: e9313214af89b473
+versioned_properties:
+  active:
+    settings:
+      default_settings:
+        id: 'system_menu_block:shop-categories'
+        label: 'Shop Categories'
+        label_display: '0'
+        provider: system
+        level: 1
+        depth: null
+        expand_all_items: false
+    fallback_metadata:
+      slot_definitions: null
+label: 'Shop Categories'
+id: block.system_menu_block.shop-categories
+provider: system
+source: block
+source_local_id: 'system_menu_block:shop-categories'

@@ -1,0 +1,25 @@
+uuid: e72cf577-1ecc-411a-8eb3-3779a5397782
+langcode: en
+status: true
+dependencies:
+  module:
+    - system
+  theme:
+    - marketplace
+_core:
+  default_config_hash: '-OAAZDw1OR_UyAEPEKX0Hu4LaZD149vW9PmMnIC-v0o'
+id: marketplace_site_branding
+theme: marketplace
+region: header
+weight: -5
+provider: null
+plugin: system_branding_block
+settings:
+  id: system_branding_block
+  label: 'Site branding'
+  label_display: '0'
+  provider: system
+  use_site_logo: false
+  use_site_name: true
+  use_site_slogan: false
+visibility: {  }

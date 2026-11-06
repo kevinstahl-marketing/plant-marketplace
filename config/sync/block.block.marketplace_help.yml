@@ -1,0 +1,22 @@
+uuid: c740c68c-4392-4dfc-bbed-84b94f68c8c8
+langcode: en
+status: false
+dependencies:
+  module:
+    - help
+  theme:
+    - marketplace
+_core:
+  default_config_hash: VfPFqqxfkomud5CO8DUijw85QIl9GIxh_nIxLOYESxg
+id: marketplace_help
+theme: marketplace
+region: header
+weight: -2
+provider: null
+plugin: help_block
+settings:
+  id: help_block
+  label: Help
+  label_display: '0'
+  provider: help
+visibility: {  }

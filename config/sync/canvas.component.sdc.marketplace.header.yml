@@ -1,0 +1,21 @@
+uuid: 40c2088c-30a4-4ad7-bbfd-0b7d0c743907
+langcode: en
+status: true
+dependencies:
+  theme:
+    - marketplace
+active_version: 299d27fd5db4c0c0
+versioned_properties:
+  active:
+    settings:
+      prop_field_definitions: {  }
+    fallback_metadata:
+      slot_definitions:
+        content:
+          title: 'Header content'
+          description: 'Drupal branding, navigation, and account blocks.'
+label: Header
+id: sdc.marketplace.header
+provider: marketplace
+source: sdc
+source_local_id: 'marketplace:header'

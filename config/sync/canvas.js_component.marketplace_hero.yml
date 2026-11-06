@@ -1,0 +1,310 @@
+uuid: fb22eeec-34c5-4e42-b023-d269da8672cd
+langcode: en
+status: true
+dependencies: {  }
+machineName: marketplace_hero
+name: 'Marketplace Hero'
+required: {  }
+props:
+  eyebrow:
+    type: string
+    title: eyebrow
+    examples:
+      - 'THE BOTANICAL MARKETPLACE'
+  title:
+    type: string
+    title: title
+    examples:
+      - 'Grow something extraordinary.'
+  description:
+    type: string
+    title: description
+    examples:
+      - 'Discover rare fruit trees, tropical plants, seeds, and everything you need to grow your own paradise.'
+  buttonText:
+    type: string
+    title: buttonText
+    examples:
+      - 'Explore the Marketplace'
+  buttonUrl:
+    type: string
+    title: buttonUrl
+    examples:
+      - /shop
+  imageUrl:
+    type: string
+    title: imageUrl
+    examples:
+      - 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1600'
+slots: {  }
+js:
+  original: |
+
+    export default function MarketplaceHero({
+      eyebrow = "THE BOTANICAL MARKETPLACE",
+      title = "Grow something extraordinary.",
+      description = "Discover rare fruit trees, tropical plants, seeds, and everything you need to grow your own paradise.",
+      buttonText = "Explore the marketplace",
+      buttonUrl = "/shop",
+      imageUrl = "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1600"
+    }) {
+      return (
+        <section className="marketplace-hero">
+          <div className="marketplace-hero__content">
+            <div className="marketplace-hero__intro">
+              <span className="marketplace-hero__eyebrow">
+                <span className="marketplace-hero__dot" />
+                {eyebrow}
+              </span>
+
+              <h1>{title}</h1>
+
+              <div className="marketplace-hero__bottom">
+                <p>{description}</p>
+                <a href={buttonUrl} className="marketplace-hero__cta">
+                  {buttonText}
+                  <span aria-hidden="true">↗</span>
+                </a>
+              </div>
+            </div>
+
+            <div className="marketplace-hero__visual">
+              <img src={imageUrl} alt="Lush botanical landscape" />
+              <span className="marketplace-hero__image-label">
+                A WORLD OF GROWTH
+              </span>
+            </div>
+          </div>
+
+          <div className="marketplace-hero__footer">
+            <span>PLANTS / SEEDS / FRUITS / MORE</span>
+            <span>SCROLL TO EXPLORE ↓</span>
+          </div>
+        </section>
+      );
+    }
+  compiled: |
+    import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+    export default function MarketplaceHero({ eyebrow = "THE BOTANICAL MARKETPLACE", title = "Grow something extraordinary.", description = "Discover rare fruit trees, tropical plants, seeds, and everything you need to grow your own paradise.", buttonText = "Explore the marketplace", buttonUrl = "/shop", imageUrl = "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1600" }) {
+        return /*#__PURE__*/ _jsxs("section", {
+            className: "marketplace-hero",
+            children: [
+                /*#__PURE__*/ _jsxs("div", {
+                    className: "marketplace-hero__content",
+                    children: [
+                        /*#__PURE__*/ _jsxs("div", {
+                            className: "marketplace-hero__intro",
+                            children: [
+                                /*#__PURE__*/ _jsxs("span", {
+                                    className: "marketplace-hero__eyebrow",
+                                    children: [
+                                        /*#__PURE__*/ _jsx("span", {
+                                            className: "marketplace-hero__dot"
+                                        }),
+                                        eyebrow
+                                    ]
+                                }),
+                                /*#__PURE__*/ _jsx("h1", {
+                                    children: title
+                                }),
+                                /*#__PURE__*/ _jsxs("div", {
+                                    className: "marketplace-hero__bottom",
+                                    children: [
+                                        /*#__PURE__*/ _jsx("p", {
+                                            children: description
+                                        }),
+                                        /*#__PURE__*/ _jsxs("a", {
+                                            href: buttonUrl,
+                                            className: "marketplace-hero__cta",
+                                            children: [
+                                                buttonText,
+                                                /*#__PURE__*/ _jsx("span", {
+                                                    "aria-hidden": "true",
+                                                    children: "↗"
+                                                })
+                                            ]
+                                        })
+                                    ]
+                                })
+                            ]
+                        }),
+                        /*#__PURE__*/ _jsxs("div", {
+                            className: "marketplace-hero__visual",
+                            children: [
+                                /*#__PURE__*/ _jsx("img", {
+                                    src: imageUrl,
+                                    alt: "Lush botanical landscape"
+                                }),
+                                /*#__PURE__*/ _jsx("span", {
+                                    className: "marketplace-hero__image-label",
+                                    children: "A WORLD OF GROWTH"
+                                })
+                            ]
+                        })
+                    ]
+                }),
+                /*#__PURE__*/ _jsxs("div", {
+                    className: "marketplace-hero__footer",
+                    children: [
+                        /*#__PURE__*/ _jsx("span", {
+                            children: "PLANTS / SEEDS / FRUITS / MORE"
+                        }),
+                        /*#__PURE__*/ _jsx("span", {
+                            children: "SCROLL TO EXPLORE ↓"
+                        })
+                    ]
+                })
+            ]
+        });
+    }
+css:
+  original: |
+
+    .marketplace-hero {
+      --forest: #203f32;
+      --cream: #f3f0e6;
+      --accent: #d1de82;
+      background: var(--cream);
+      color: var(--forest);
+      overflow: hidden;
+    }
+
+    .marketplace-hero__content {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      min-height: 650px;
+    }
+
+    .marketplace-hero__intro {
+      padding: clamp(32px, 5vw, 90px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 48px;
+    }
+
+    .marketplace-hero__eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+    }
+
+    .marketplace-hero__dot {
+      width: 9px;
+      height: 9px;
+      background: #719453;
+      border-radius: 50%;
+    }
+
+    .marketplace-hero h1 {
+      font-family: Georgia, serif;
+      font-size: clamp(4rem, 7.5vw, 9rem);
+      line-height: 0.89;
+      letter-spacing: -0.065em;
+      font-weight: 400;
+      max-width: 900px;
+      margin: 0;
+    }
+
+    .marketplace-hero__bottom {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: end;
+      justify-content: space-between;
+      gap: 28px;
+    }
+
+    .marketplace-hero__bottom p {
+      max-width: 320px;
+      line-height: 1.6;
+      font-size: 16px;
+      margin: 0;
+    }
+
+    .marketplace-hero__cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 24px;
+      padding: 17px 22px;
+      background: var(--forest);
+      color: white;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      transition: background 200ms, transform 200ms;
+    }
+
+    .marketplace-hero__cta:hover {
+      background: #41664d;
+      transform: translateY(-3px);
+    }
+
+    .marketplace-hero__visual {
+      position: relative;
+      min-height: 460px;
+      overflow: hidden;
+    }
+
+    .marketplace-hero__visual img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      inset: 0;
+      transition: transform 900ms ease;
+    }
+
+    .marketplace-hero__visual:hover img {
+      transform: scale(1.06);
+    }
+
+    .marketplace-hero__image-label {
+      position: absolute;
+      bottom: 30px;
+      right: 30px;
+      color: white;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      font-weight: 700;
+    }
+
+    .marketplace-hero__footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      background: var(--forest);
+      color: var(--cream);
+      padding: 18px 5vw;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+    }
+
+    @media (max-width: 850px) {
+      .marketplace-hero__content {
+        grid-template-columns: 1fr;
+      }
+
+      .marketplace-hero__intro {
+        padding: 48px 24px;
+      }
+
+      .marketplace-hero h1 {
+        font-size: clamp(4rem, 13vw, 7rem);
+      }
+
+      .marketplace-hero__visual {
+        min-height: 390px;
+      }
+
+      .marketplace-hero__footer {
+        padding: 18px 24px;
+        flex-wrap: wrap;
+      }
+    }
+  compiled: |-
+    /*! tailwindcss v4.1.13 | MIT License | https://tailwindcss.com */
+    .marketplace-hero{--forest:#203f32;--cream:#f3f0e6;--accent:#d1de82;background:var(--cream);color:var(--forest);overflow:hidden}.marketplace-hero__content{grid-template-columns:1.15fr .85fr;min-height:650px;display:grid}.marketplace-hero__intro{flex-direction:column;justify-content:space-between;gap:48px;padding:clamp(32px,5vw,90px);display:flex}.marketplace-hero__eyebrow{letter-spacing:.18em;align-items:center;gap:12px;font-size:11px;font-weight:700;display:flex}.marketplace-hero__dot{background:#719453;border-radius:50%;width:9px;height:9px}.marketplace-hero h1{letter-spacing:-.065em;max-width:900px;margin:0;font-family:Georgia,serif;font-size:clamp(4rem,7.5vw,9rem);font-weight:400;line-height:.89}.marketplace-hero__bottom{flex-wrap:wrap;justify-content:space-between;align-items:end;gap:28px;display:flex}.marketplace-hero__bottom p{max-width:320px;margin:0;font-size:16px;line-height:1.6}.marketplace-hero__cta{background:var(--forest);color:#fff;align-items:center;gap:24px;padding:17px 22px;font-size:13px;font-weight:600;text-decoration:none;transition:background .2s,transform .2s;display:inline-flex}.marketplace-hero__cta:hover{background:#41664d;transform:translateY(-3px)}.marketplace-hero__visual{min-height:460px;position:relative;overflow:hidden}.marketplace-hero__visual img{object-fit:cover;width:100%;height:100%;transition:transform .9s;position:absolute;inset:0}.marketplace-hero__visual:hover img{transform:scale(1.06)}.marketplace-hero__image-label{color:#fff;letter-spacing:.2em;font-size:10px;font-weight:700;position:absolute;bottom:30px;right:30px}.marketplace-hero__footer{background:var(--forest);color:var(--cream);letter-spacing:.12em;justify-content:space-between;gap:16px;padding:18px 5vw;font-size:10px;display:flex}@media (max-width:850px){.marketplace-hero__content{grid-template-columns:1fr}.marketplace-hero__intro{padding:48px 24px}.marketplace-hero h1{font-size:clamp(4rem,13vw,7rem)}.marketplace-hero__visual{min-height:390px}.marketplace-hero__footer{flex-wrap:wrap;padding:18px 24px}}
+dataDependencies: {  }

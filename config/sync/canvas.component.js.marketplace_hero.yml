@@ -1,0 +1,90 @@
+uuid: 78aadf0f-a05f-48ca-a4bc-6fb1be9101b2
+langcode: en
+status: true
+dependencies:
+  config:
+    - canvas.js_component.marketplace_hero
+active_version: 01aea6e826cfc749
+versioned_properties:
+  active:
+    settings:
+      prop_field_definitions:
+        eyebrow:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: 'THE BOTANICAL MARKETPLACE'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        title:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: 'Grow something extraordinary.'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        description:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: 'Discover rare fruit trees, tropical plants, seeds, and everything you need to grow your own paradise.'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        buttonText:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: 'Explore the Marketplace'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        buttonUrl:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: /shop
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        imageUrl:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1600'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+    fallback_metadata:
+      slot_definitions: {  }
+label: 'Marketplace Hero'
+id: js.marketplace_hero
+provider: null
+source: js
+source_local_id: marketplace_hero

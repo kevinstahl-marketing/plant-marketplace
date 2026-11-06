@@ -1,0 +1,20 @@
+uuid: 0ae78184-ebc2-48fb-af31-4ecd9ffb0537
+langcode: en
+status: true
+dependencies:
+  theme:
+    - marketplace
+_core:
+  default_config_hash: Q9_2whdOj1YIomfvsIfopROW4FT_X5pY0DjdOiOaQ5U
+id: marketplace_primary_admin_actions
+theme: marketplace
+region: admin
+weight: -3
+provider: null
+plugin: local_actions_block
+settings:
+  id: local_actions_block
+  label: 'Primary admin actions'
+  label_display: '0'
+  provider: core
+visibility: {  }

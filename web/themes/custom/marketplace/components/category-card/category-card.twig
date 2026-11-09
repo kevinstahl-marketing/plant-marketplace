@@ -1,0 +1,21 @@
+<a class="category-card" href="{{ url|default('/shop') }}">
+  <div class="category-card__media">
+    {% if image_url %}
+      <img
+        src="{{ image_url }}"
+        alt="{{ image_alt|default(title) }}"
+        loading="lazy"
+      >
+    {% endif %}
+
+    <span class="category-card__arrow" aria-hidden="true">↗</span>
+  </div>
+
+  <div class="category-card__content">
+    <h3 class="category-card__title">{{ title }}</h3>
+
+    {% if description %}
+      <p class="category-card__description">{{ description }}</p>
+    {% endif %}
+  </div>
+</a>

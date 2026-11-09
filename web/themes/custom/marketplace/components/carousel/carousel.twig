@@ -1,0 +1,47 @@
+{% set title = heading|default('Discover More') %}
+{% set desktop = desktop_columns|default('4') %}
+{% set tablet = tablet_columns|default('2') %}
+{% set mobile = mobile_columns|default('1.25') %}
+{% set gap = spacing|default('normal') %}
+{% set arrows = show_arrows is not defined ? true : show_arrows %}
+{% set dots = show_dots|default(false) %}
+{% set snapping = snap is not defined ? true : snap %}
+
+<section
+  class="mp-carousel mp-carousel--gap-{{ gap }}{{ snapping ? '' : ' mp-carousel--free' }}"
+  style="--carousel-desktop:{{ desktop }};--carousel-tablet:{{ tablet }};--carousel-mobile:{{ mobile }};"
+  data-scroll-amount="{{ scroll_amount|default('card') }}"
+>
+  <div class="container">
+    <div class="mp-carousel__header">
+      <div class="mp-carousel__intro">
+        {% if eyebrow %}
+          <p class="mp-carousel__eyebrow">{{ eyebrow }}</p>
+        {% endif %}
+        <h2 class="mp-carousel__heading">{{ title }}</h2>
+        {% if description %}
+          <p class="mp-carousel__description">{{ description }}</p>
+        {% endif %}
+      </div>
+
+      {% if arrows %}
+        <div class="mp-carousel__controls">
+          <button type="button" class="mp-carousel__button"
+            data-carousel-prev aria-label="Previous items">←</button>
+          <button type="button" class="mp-carousel__button"
+            data-carousel-next aria-label="Next items">→</button>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="mp-carousel__track" data-carousel-track
+      tabindex="0" role="region" aria-label="{{ title }} carousel">
+      {{ items }}
+    </div>
+
+    {% if dots %}
+      <div class="mp-carousel__dots" data-carousel-dots
+        aria-label="Carousel pagination"></div>
+    {% endif %}
+  </div>
+</section>

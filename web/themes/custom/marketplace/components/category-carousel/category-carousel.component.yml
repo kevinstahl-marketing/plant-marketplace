@@ -1,0 +1,28 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/11.x/core/assets/schemas/v1/metadata.schema.json
+
+name: Category Carousel
+description: Responsive, horizontally scrollable marketplace category collection.
+
+props:
+  type: object
+  properties:
+    eyebrow:
+      type: string
+      title: Eyebrow
+      examples:
+        - Find your next favorite
+    heading:
+      type: string
+      title: Section heading
+      examples:
+        - Explore the Marketplace
+    description:
+      type: string
+      title: Section description
+      examples:
+        - From tropical fruit trees to rare botanical discoveries.
+
+slots:
+  cards:
+    title: Category Cards
+    description: Add and rearrange category cards.

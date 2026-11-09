@@ -1,0 +1,61 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/11.x/core/assets/schemas/v1/metadata.schema.json
+name: Carousel
+description: Responsive carousel for reusable marketplace cards.
+
+props:
+  type: object
+  properties:
+    eyebrow:
+      type: string
+      title: Eyebrow
+      examples: [Explore]
+    heading:
+      type: string
+      title: Heading
+      examples: [Explore the Marketplace]
+    description:
+      type: string
+      title: Description
+      examples: [Discover something extraordinary.]
+    desktop_columns:
+      type: string
+      title: Desktop cards visible
+      enum: ['2', '3', '4', '5', '6']
+      examples: ['4']
+    tablet_columns:
+      type: string
+      title: Tablet cards visible
+      enum: ['1', '2', '3']
+      examples: ['2']
+    mobile_columns:
+      type: string
+      title: Mobile cards visible
+      enum: ['1', '1.25', '1.5', '2']
+      examples: ['1.25']
+    spacing:
+      type: string
+      title: Card spacing
+      enum: [tight, normal, relaxed]
+      examples: [normal]
+    show_arrows:
+      type: boolean
+      title: Show navigation arrows
+      examples: [true]
+    show_dots:
+      type: boolean
+      title: Show pagination dots
+      examples: [false]
+    snap:
+      type: boolean
+      title: Snap scrolling to cards
+      examples: [true]
+    scroll_amount:
+      type: string
+      title: Arrow scroll amount
+      enum: [card, page]
+      examples: [card]
+
+slots:
+  items:
+    title: Carousel Items
+    description: Add category, collection, product or other cards.

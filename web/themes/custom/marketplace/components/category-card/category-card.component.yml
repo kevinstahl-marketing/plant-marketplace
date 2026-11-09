@@ -1,0 +1,33 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/11.x/core/assets/schemas/v1/metadata.schema.json
+
+name: Category Card
+description: Editorial category card for marketplace browsing.
+
+props:
+  type: object
+  properties:
+    title:
+      type: string
+      title: Category title
+      examples:
+        - Fruit Trees
+    description:
+      type: string
+      title: Description
+      examples:
+        - Discover something delicious to grow.
+    image_url:
+      type: string
+      title: Image URL
+      examples:
+        - https://images.unsplash.com/photo-1553279768-865429fa0078
+    image_alt:
+      type: string
+      title: Image description
+      examples:
+        - Fresh tropical mangoes
+    url:
+      type: string
+      title: Category destination
+      examples:
+        - /shop

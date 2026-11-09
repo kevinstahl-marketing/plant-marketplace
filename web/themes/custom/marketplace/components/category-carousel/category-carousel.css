@@ -1,0 +1,105 @@
+.category-carousel {
+  padding: var(--section-spacing) 0;
+  overflow: hidden;
+}
+
+.category-carousel__header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.category-carousel__eyebrow {
+  margin: 0 0 0.6rem;
+  color: var(--color-primary);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.category-carousel__heading {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  line-height: 1.1;
+}
+
+.category-carousel__description {
+  margin: 0.75rem 0 0;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+.category-carousel__controls {
+  display: flex;
+  gap: 0.6rem;
+  flex-shrink: 0;
+}
+
+.category-carousel__button {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background: var(--color-surface);
+  color: var(--color-primary-dark);
+  font-size: 1.3rem;
+  cursor: pointer;
+}
+
+.category-carousel__button:hover {
+  border-color: var(--color-primary);
+  background: var(--color-surface-muted);
+}
+
+.category-carousel__track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, calc((100% - 3rem) / 4));
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  padding-bottom: 0.5rem;
+}
+
+.category-carousel__track::-webkit-scrollbar {
+  display: none;
+}
+
+.category-carousel__track > * {
+  min-width: 0;
+  scroll-snap-align: start;
+}
+
+@media (max-width: 900px) {
+  .category-carousel__track {
+    grid-auto-columns: minmax(0, calc((100% - 1rem) / 2));
+  }
+}
+
+@media (max-width: 600px) {
+  .category-carousel__track {
+    grid-auto-columns: minmax(0, 76%);
+  }
+
+  .category-carousel__controls {
+    display: none;
+  }
+
+  .category-carousel__header {
+    margin-bottom: 1.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .category-carousel__track {
+    scroll-behavior: auto;
+  }
+}

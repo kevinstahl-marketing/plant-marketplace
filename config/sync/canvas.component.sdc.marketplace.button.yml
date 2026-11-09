@@ -1,0 +1,18 @@
+uuid: a42573cc-611f-4754-986c-8946dcdf1630
+langcode: en
+status: true
+dependencies:
+  theme:
+    - marketplace
+active_version: 8fe3be948e0194e1
+versioned_properties:
+  active:
+    settings:
+      prop_field_definitions: {  }
+    fallback_metadata:
+      slot_definitions: {  }
+label: button
+id: sdc.marketplace.button
+provider: marketplace
+source: sdc
+source_local_id: 'marketplace:button'

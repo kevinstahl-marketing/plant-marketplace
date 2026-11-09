@@ -1,46 +1,92 @@
 .marketplace-hero {
-  display: flex;
-  align-items: center;
-  min-height: 480px;
-  padding-block: var(--space-16);
-  background: var(--color-surface-muted);
+  padding-block: var(--section-spacing);
+  background: var(--color-background);
+  overflow: hidden;
 }
 
 .marketplace-hero__inner {
-  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(2rem, 5vw, 5rem);
 }
 
 .marketplace-hero__content {
-  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-6);
+}
+
+.marketplace-hero__eyebrow {
+  color: var(--color-primary);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 .marketplace-hero__heading {
+  margin: 0;
+  color: var(--color-text);
+  font-family: var(--font-heading);
   font-size: var(--text-3xl);
-  line-height: 1.05;
+  line-height: 1.08;
   letter-spacing: -0.035em;
-  margin-bottom: var(--space-6);
 }
 
 .marketplace-hero__description {
-  max-width: 540px;
-  font-size: var(--text-lg);
+  max-width: 52ch;
+  margin: 0;
   color: var(--color-text-muted);
-  margin-bottom: var(--space-8);
+  font-size: var(--text-lg);
+  line-height: 1.7;
 }
 
-.marketplace-hero__button {
-  display: inline-flex;
-  align-items: center;
-  padding: var(--space-3) var(--space-6);
-  background: var(--color-primary);
-  color: var(--color-surface);
-  border-radius: var(--radius-md);
-  font-weight: 600;
-  text-decoration: none;
-  transition: background 180ms ease;
+.marketplace-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
 }
 
-.marketplace-hero__button:hover {
-  background: var(--color-primary-dark);
-  color: var(--color-surface);
+.marketplace-hero__media {
+  min-width: 0;
+  aspect-ratio: 5 / 4;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-muted);
+  box-shadow: var(--shadow-lg);
+}
+
+.marketplace-hero__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 768px) {
+  .marketplace-hero__inner {
+    grid-template-columns: 1fr;
+  }
+
+  .marketplace-hero__content {
+    gap: var(--space-4);
+  }
+
+  .marketplace-hero__description {
+    font-size: var(--text-base);
+  }
+
+  .marketplace-hero__media {
+    aspect-ratio: 4 / 3;
+  }
+}
+/* ========================================
+   HERO SEARCH
+======================================== */
+
+.marketplace-hero__search {
+  width: 100%;
+  max-width: 720px;
 }

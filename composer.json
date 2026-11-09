@@ -21,6 +21,10 @@
         "drupal/core-project-message": "^11.4",
         "drupal/core-recipe-unpack": "^11.4",
         "drupal/core-recommended": "^11.4",
+        "drupal/facets": "^3.0",
+        "drupal/search_api": "^1.43",
+        "drupal/search_api_autocomplete": "^1.12",
+        "drupal/search_api_db": "^1.43",
         "drush/drush": "^13.8"
     },
     "conflict": {

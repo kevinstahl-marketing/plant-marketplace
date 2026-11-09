@@ -1,0 +1,50 @@
+uuid: 9fffcd57-060f-4319-8617-c1bf91eac0ed
+langcode: en
+status: true
+dependencies:
+  config:
+    - search_api.server.marketplace_database
+  module:
+    - node
+id: marketplace_search
+name: 'Marketplace Search'
+description: 'Searchable marketplace content and botanical information'
+read_only: false
+field_settings:
+  title:
+    label: Title
+    datasource_id: 'entity:node'
+    property_path: title
+    type: text
+    dependencies:
+      module:
+        - node
+datasource_settings:
+  'entity:node':
+    bundles:
+      default: true
+      selected: {  }
+    languages:
+      default: true
+      selected: {  }
+processor_settings:
+  add_url: {  }
+  aggregated_field: {  }
+  custom_value: {  }
+  entity_type: {  }
+  ignorecase:
+    all_fields: false
+    status: true
+    weight: -10
+    settings: {  }
+  language_with_fallback: {  }
+  rendered_item: {  }
+tracker_settings:
+  default:
+    indexing_order: fifo
+options:
+  cron_limit: 50
+  delete_on_fail: true
+  index_directly: true
+  track_changes_in_references: true
+server: marketplace_database

@@ -5,8 +5,10 @@ dependencies:
   config:
     - canvas.component.js.marketplace_hero
     - canvas.component.marker.page_content
+    - canvas.component.sdc.marketplace.button
     - canvas.component.sdc.marketplace.header
     - canvas.component.sdc.marketplace.hero
+    - canvas.component.sdc.marketplace.search-box
     - canvas.component.sdc.navigation.message
     - canvas.component.sdc.navigation.title
     - canvas.component.sdc.olivero.teaser
@@ -16,8 +18,10 @@ weight: 0
 items:
   - js.marketplace_hero
   - marker.page_content
+  - sdc.marketplace.button
   - sdc.marketplace.header
   - sdc.marketplace.hero
+  - sdc.marketplace.search-box
   - sdc.navigation.message
   - sdc.navigation.title
   - sdc.olivero.teaser

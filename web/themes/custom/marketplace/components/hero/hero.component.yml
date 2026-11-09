@@ -1,27 +1,35 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/11.x/core/assets/schemas/v1/metadata.schema.json
+
 name: Marketplace Hero
-description: 'A reusable storefront hero with a headline and call to action.'
-status: stable
+description: Discovery-focused homepage hero with CTAs and imagery.
 
 props:
   type: object
   properties:
+    eyebrow:
+      type: string
+      title: Eyebrow text
     heading:
       type: string
       title: Heading
-      examples:
-        - Grow Something Extraordinary
     description:
       type: string
       title: Description
-      examples:
-        - Discover plants, seeds, and everything you need to grow.
-    button_text:
+    primary_label:
       type: string
-      title: Button text
-      examples:
-        - Explore Plants
-    button_url:
+      title: Primary button label
+    primary_url:
       type: string
-      title: Button URL
-      examples:
-        - /shop
+      title: Primary button URL
+    secondary_label:
+      type: string
+      title: Secondary button label
+    secondary_url:
+      type: string
+      title: Secondary button URL
+    image_url:
+      type: string
+      title: Image URL
+    image_alt:
+      type: string
+      title: Image alternative text

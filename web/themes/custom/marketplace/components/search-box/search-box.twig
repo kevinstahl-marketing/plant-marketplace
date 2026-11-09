@@ -1,0 +1,24 @@
+<form
+  class="marketplace-search"
+  action="{{ action|default('/search') }}"
+  method="get"
+  role="search"
+>
+  <label class="visually-hidden" for="marketplace-search-input">
+    Search marketplace
+  </label>
+
+  <input
+    id="marketplace-search-input"
+    class="marketplace-search__input"
+    type="search"
+    name="keys"
+    placeholder="{{ placeholder|default('Search plants, seeds, fruits, cultivars...') }}"
+    aria-label="Search marketplace"
+    required
+  >
+
+  <button class="marketplace-search__submit" type="submit">
+    Search
+  </button>
+</form>

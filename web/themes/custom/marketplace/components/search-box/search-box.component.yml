@@ -1,0 +1,16 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/11.x/core/assets/schemas/v1/metadata.schema.json
+
+name: Search Box
+description: Reusable marketplace search form.
+
+props:
+  type: object
+  properties:
+    placeholder:
+      type: string
+      title: Placeholder
+      default: Search plants, seeds, fruits...
+    action:
+      type: string
+      title: Search results URL
+      default: /search

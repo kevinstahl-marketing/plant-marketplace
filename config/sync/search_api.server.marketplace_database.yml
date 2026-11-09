@@ -1,0 +1,18 @@
+uuid: 09ca061b-cfa7-4e35-87da-84d48db13202
+langcode: en
+status: true
+dependencies:
+  module:
+    - search_api_db
+id: marketplace_database
+name: 'Marketplace Database'
+description: "\tSearch backend for plants, seeds, fruits, products, and botanical content."
+backend: search_api_db
+backend_config:
+  database: 'default:default'
+  min_chars: 2
+  matching: prefix
+  phrase: disabled
+  autocomplete:
+    suggest_suffix: true
+    suggest_words: true

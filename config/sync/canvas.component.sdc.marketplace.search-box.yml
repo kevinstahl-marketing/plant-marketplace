@@ -1,0 +1,38 @@
+uuid: 369997ee-0c6b-4c59-be41-334d51d0088a
+langcode: en
+status: true
+dependencies:
+  theme:
+    - marketplace
+active_version: 52f501c53544be13
+versioned_properties:
+  active:
+    settings:
+      prop_field_definitions:
+        placeholder:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value: null
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        action:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value: null
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+    fallback_metadata:
+      slot_definitions: {  }
+label: 'Search Box'
+id: sdc.marketplace.search-box
+provider: marketplace
+source: sdc
+source_local_id: 'marketplace:search-box'

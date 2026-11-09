@@ -116,16 +116,4 @@
   min-width: 0;
 }
 
-.site-header {
-  width: 100%;
-  background: var(--color-surface);
-  border-bottom: 1px solid var(--color-border);
-}
-
-.site-footer {
-  width: 100%;
-  background: var(--color-primary-dark);
-  color: var(--color-surface);
-  padding-block: var(--space-12);
-}
 

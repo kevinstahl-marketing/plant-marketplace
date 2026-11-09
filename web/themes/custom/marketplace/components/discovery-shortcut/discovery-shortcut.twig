@@ -1,0 +1,11 @@
+<a class="discovery-shortcut" href="{{ url|default('/shop') }}">
+  <span class="discovery-shortcut__content">
+    <strong>{{ label|default('Explore') }}</strong>
+
+    {% if description %}
+      <small>{{ description }}</small>
+    {% endif %}
+  </span>
+
+  <span class="discovery-shortcut__arrow" aria-hidden="true">→</span>
+</a>

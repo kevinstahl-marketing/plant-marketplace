@@ -1,0 +1,23 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/11.x/core/assets/schemas/v1/metadata.schema.json
+
+name: Discovery Shortcut
+description: Navigation card linking to a marketplace collection or page.
+
+props:
+  type: object
+  properties:
+    label:
+      type: string
+      title: Label
+      examples:
+        - Shop Plants
+    description:
+      type: string
+      title: Description
+      examples:
+        - Explore our plant collection
+    url:
+      type: string
+      title: Destination URL
+      examples:
+        - /shop

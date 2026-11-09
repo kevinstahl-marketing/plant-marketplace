@@ -1,0 +1,37 @@
+<section class="discovery-cockpit" aria-label="Marketplace discovery">
+  <div class="container">
+    <div class="discovery-cockpit__panel">
+
+      <div class="discovery-cockpit__intro">
+        {% if eyebrow %}
+          <p class="discovery-cockpit__eyebrow">{{ eyebrow }}</p>
+        {% endif %}
+
+        {% if heading %}
+          <h2 class="discovery-cockpit__heading">{{ heading }}</h2>
+        {% endif %}
+      </div>
+
+      <div class="discovery-cockpit__search">
+        {{ include('marketplace:search-box', {
+          placeholder: search_placeholder|default('Search plants, seeds, cultivars...'),
+          action: search_action|default('/search')
+        }, with_context = false) }}
+      </div>
+
+      {% if popular_searches is not empty %}
+        <div class="discovery-cockpit__popular">
+          <span class="discovery-cockpit__popular-label">Popular searches</span>
+          {{ popular_searches }}
+        </div>
+      {% endif %}
+
+      {% if shortcuts is not empty %}
+        <div class="discovery-cockpit__shortcuts">
+          {{ shortcuts }}
+        </div>
+      {% endif %}
+
+    </div>
+  </div>
+</section>

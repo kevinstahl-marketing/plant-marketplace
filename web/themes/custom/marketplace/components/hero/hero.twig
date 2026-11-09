@@ -4,9 +4,9 @@
     <div class="marketplace-hero__content">
 
       {% if eyebrow %}
-        <span class="marketplace-hero__eyebrow">
+        <p class="marketplace-hero__eyebrow">
           {{ eyebrow }}
-        </span>
+        </p>
       {% endif %}
 
       {% if heading %}
@@ -21,33 +21,27 @@
         </p>
       {% endif %}
 
+      {% if (primary_label and primary_url) or (secondary_label and secondary_url) %}
+        <div class="marketplace-hero__actions">
 
-      <div class="marketplace-hero__search">
-        {{ include('marketplace:search-box', {
-          placeholder: 'Search plants, seeds, fruits, cultivars...',
-          action: '/search'
-        }, with_context = false) }}
-      </div>
+          {% if primary_label and primary_url %}
+            {{ include('marketplace:button', {
+              label: primary_label,
+              url: primary_url,
+              variant: 'primary'
+            }, with_context = false) }}
+          {% endif %}
 
-      <div class="marketplace-hero__actions">
+          {% if secondary_label and secondary_url %}
+            {{ include('marketplace:button', {
+              label: secondary_label,
+              url: secondary_url,
+              variant: 'secondary'
+            }, with_context = false) }}
+          {% endif %}
 
-        {% if primary_label and primary_url %}
-          {{ include('marketplace:button', {
-            label: primary_label,
-            url: primary_url,
-            variant: 'primary'
-          }, with_context = false) }}
-        {% endif %}
-
-        {% if secondary_label and secondary_url %}
-          {{ include('marketplace:button', {
-            label: secondary_label,
-            url: secondary_url,
-            variant: 'secondary'
-          }, with_context = false) }}
-        {% endif %}
-
-      </div>
+        </div>
+      {% endif %}
 
     </div>
 

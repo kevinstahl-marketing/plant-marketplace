@@ -1,0 +1,18 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/11.x/core/assets/schemas/v1/metadata.schema.json
+
+name: Search Chip
+description: A clickable popular-search suggestion.
+
+props:
+  type: object
+  properties:
+    label:
+      type: string
+      title: Label
+      examples:
+        - Mango trees
+    query:
+      type: string
+      title: Search query
+      examples:
+        - mango

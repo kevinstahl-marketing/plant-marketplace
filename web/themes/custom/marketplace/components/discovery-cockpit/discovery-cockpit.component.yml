@@ -1,0 +1,36 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/11.x/core/assets/schemas/v1/metadata.schema.json
+
+name: Discovery Cockpit
+description: Marketplace search and discovery panel.
+
+props:
+  type: object
+  properties:
+    eyebrow:
+      type: string
+      title: Eyebrow
+      examples:
+        - Explore the marketplace
+    heading:
+      type: string
+      title: Heading
+      examples:
+        - What are you looking for?
+    search_placeholder:
+      type: string
+      title: Search placeholder
+      examples:
+        - Search plants, seeds, cultivars...
+    search_action:
+      type: string
+      title: Search results path
+      examples:
+        - /search
+
+slots:
+  popular_searches:
+    title: Popular Searches
+    description: Search chips displayed beneath the search box.
+  shortcuts:
+    title: Navigation Shortcuts
+    description: Marketplace category and discovery links.

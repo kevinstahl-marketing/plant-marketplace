@@ -1,0 +1,6 @@
+<a
+  class="search-chip"
+  href="{{ '/search?keys=' ~ (query|default(label)|url_encode) }}"
+>
+  {{ label|default('Explore') }}
+</a>

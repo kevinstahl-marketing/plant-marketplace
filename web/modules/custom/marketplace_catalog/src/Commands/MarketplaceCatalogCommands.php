@@ -131,4 +131,94 @@ final class MarketplaceCatalogCommands extends DrushCommands {
     }
   }
 
+
+  /**
+   * Audit Drupal products missing from the Shopify catalog.
+   *
+   * @command marketplace:audit-missing
+   * @option page-size Shopify products per page.
+   * @option max-pages Maximum pages to scan.
+   */
+  public function auditMissingProducts(
+    array $options = [
+      'page-size' => 25,
+      'max-pages' => 100,
+    ],
+  ): void {
+    $pageSize = max(1, min(50, (int) $options['page-size']));
+    $maxPages = max(1, min(1000, (int) $options['max-pages']));
+
+    $shopifyIds = [];
+    $cursor = NULL;
+    $pages = 0;
+    $hasMore = FALSE;
+
+    do {
+      $page = $this->importer->fetchPage($pageSize, $cursor);
+
+      foreach ($page['products'] as $product) {
+        $shopifyIds[$product['id']] = TRUE;
+      }
+
+      $pages++;
+      $hasMore = !empty($page['has_next_page']);
+      $nextCursor = $page['end_cursor'] ?? NULL;
+
+      if ($hasMore && (!$nextCursor || $nextCursor === $cursor)) {
+        throw new \RuntimeException('Invalid Shopify pagination cursor.');
+      }
+
+      $cursor = $nextCursor;
+    } while ($hasMore && $pages < $maxPages);
+
+    if ($hasMore) {
+      throw new \RuntimeException(
+        'Audit incomplete: page limit reached. No conclusions made.'
+      );
+    }
+
+    $storage = \Drupal::entityTypeManager()->getStorage('node');
+
+    $ids = $storage->getQuery()
+      ->accessCheck(FALSE)
+      ->condition('type', 'shopify_product')
+      ->execute();
+
+    $missing = [];
+
+    foreach ($storage->loadMultiple($ids) as $node) {
+      $shopifyId = $node->get('field_shopify_id')->value;
+
+      if ($shopifyId && !isset($shopifyIds[$shopifyId])) {
+        $missing[] = [
+          $node->id(),
+          $node->label(),
+          $shopifyId,
+        ];
+      }
+    }
+
+    $this->io()->title('Shopify Catalog Reconciliation Audit');
+    $this->io()->text(sprintf(
+      'Scanned %d Shopify products across %d pages.',
+      count($shopifyIds),
+      $pages
+    ));
+
+    if (!$missing) {
+      $this->io()->success('No missing Drupal products detected.');
+      return;
+    }
+
+    $this->io()->table(
+      ['Drupal node ID', 'Product', 'Shopify ID'],
+      $missing
+    );
+
+    $this->io()->warning(sprintf(
+      '%d Drupal products are missing from Shopify. No nodes were modified.',
+      count($missing)
+    ));
+  }
+
 }

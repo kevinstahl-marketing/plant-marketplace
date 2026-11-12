@@ -10,7 +10,8 @@ use Drupal\shopify_connector\Service\ShopifyAdminApiClient;
  *
  * Shopify remains the source of truth for commerce data.
  */
-final class ShopifyProductImporter {
+final class ShopifyProductImporter
+{
 
   public function __construct(
     private readonly EntityTypeManagerInterface $entityTypeManager,
@@ -20,7 +21,8 @@ final class ShopifyProductImporter {
   /**
    * Fetch a small batch of products from Shopify.
    */
-  public function preview(int $limit = 5): array {
+  public function preview(int $limit = 5): array
+  {
     $limit = max(1, min(50, $limit));
 
     $query = <<<'GRAPHQL'
@@ -67,10 +69,85 @@ GRAPHQL;
   }
 
   /**
+   * Fetch one page of Shopify products using cursor pagination.
+   *
+   * Returns products and pagination information.
+   */
+  public function fetchPage(int $limit = 25, ?string $cursor = NULL): array
+  {
+    $limit = max(1, min(50, $limit));
+
+    $query = <<<'GRAPHQL'
+query MarketplaceProductPage($first: Int!, $after: String) {
+  products(first: $first, after: $after) {
+    nodes {
+      id
+      title
+      handle
+      descriptionHtml
+      vendor
+      productType
+      status
+      tags
+      featuredImage {
+        url
+        altText
+      }
+      variants(first: 50) {
+        nodes {
+          id
+          title
+          sku
+          price
+          compareAtPrice
+          inventoryQuantity
+          availableForSale
+          selectedOptions {
+            name
+            value
+          }
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+GRAPHQL;
+
+    $data = $this->shopify->query($query, [
+      'first' => $limit,
+      'after' => $cursor,
+    ]);
+
+    $connection = $data['products'] ?? [];
+
+    return [
+      'products' => $connection['nodes'] ?? [],
+      'has_next_page' => $connection['pageInfo']['hasNextPage'] ?? FALSE,
+      'end_cursor' => $connection['pageInfo']['endCursor'] ?? NULL,
+    ];
+  }
+
+  /**
    * Import products and their variants.
    */
-  public function import(int $limit = 5): array {
-    $products = $this->preview($limit);
+  public function import(int $limit = 5): array
+  {
+    return $this->importProducts($this->preview($limit));
+  }
+
+  /**
+   * Import a batch of products already fetched from Shopify.
+   */
+  public function importProducts(array $products): array
+  {
     $storage = $this->entityTypeManager->getStorage('node');
 
     $results = [
@@ -95,8 +172,7 @@ GRAPHQL;
         if ($existing) {
           $node = reset($existing);
           $action = 'updated';
-        }
-        else {
+        } else {
           $node = $storage->create([
             'type' => 'shopify_product',
             'field_shopify_id' => $shopifyId,
@@ -136,9 +212,7 @@ GRAPHQL;
         $results['variants_created'] += $variantResults['created'];
         $results['variants_updated'] += $variantResults['updated'];
         $results['variants_failed'] += $variantResults['failed'];
-
-      }
-      catch (\Throwable $exception) {
+      } catch (\Throwable $exception) {
         $results['failed']++;
 
         \Drupal::logger('marketplace_catalog')->error(
@@ -154,10 +228,67 @@ GRAPHQL;
     return $results;
   }
 
+  
+  /**
+   * Import all Shopify products, page by page.
+   *
+   * $maxPages is a safety limit for testing.
+   */
+  public function syncAll(int $pageSize = 25, int $maxPages = 2): array {
+    $pageSize = max(1, min(50, $pageSize));
+    $maxPages = max(1, min(1000, $maxPages));
+
+    $totals = [
+      'pages' => 0,
+      'created' => 0,
+      'updated' => 0,
+      'failed' => 0,
+      'variants_created' => 0,
+      'variants_updated' => 0,
+      'variants_failed' => 0,
+      'has_more' => FALSE,
+    ];
+
+    $cursor = NULL;
+
+    do {
+      $page = $this->fetchPage($pageSize, $cursor);
+
+      if (empty($page['products'])) {
+        break;
+      }
+
+      $results = $this->importProducts($page['products']);
+
+      foreach ($results as $key => $value) {
+        $totals[$key] += $value;
+      }
+
+      $totals['pages']++;
+
+      $hasNextPage = !empty($page['has_next_page']);
+      $nextCursor = $page['end_cursor'] ?? NULL;
+
+      if ($hasNextPage && (!$nextCursor || $nextCursor === $cursor)) {
+        throw new \RuntimeException(
+          'Shopify pagination returned an invalid or repeated cursor.'
+        );
+      }
+
+      $cursor = $nextCursor;
+
+    } while ($hasNextPage && $totals['pages'] < $maxPages);
+
+    $totals['has_more'] = $hasNextPage ?? FALSE;
+
+    return $totals;
+  }
+
   /**
    * Create or update variants belonging to a product.
    */
-  private function syncVariants(array $product, int $parentNodeId): array {
+  private function syncVariants(array $product, int $parentNodeId): array
+  {
     $storage = $this->entityTypeManager->getStorage('node');
 
     $results = [
@@ -179,8 +310,7 @@ GRAPHQL;
         if ($existing) {
           $node = reset($existing);
           $action = 'updated';
-        }
-        else {
+        } else {
           $node = $storage->create([
             'type' => 'shopify_variant',
             'field_variant_shopify_id' => $variantId,
@@ -232,9 +362,7 @@ GRAPHQL;
 
         $node->save();
         $results[$action]++;
-
-      }
-      catch (\Throwable $exception) {
+      } catch (\Throwable $exception) {
         $results['failed']++;
 
         \Drupal::logger('marketplace_catalog')->error(
@@ -249,5 +377,4 @@ GRAPHQL;
 
     return $results;
   }
-
 }

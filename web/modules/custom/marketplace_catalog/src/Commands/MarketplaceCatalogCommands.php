@@ -238,4 +238,41 @@ final class MarketplaceCatalogCommands extends DrushCommands {
     );
   }
 
+
+  /**
+   * Synchronize Shopify variant inventory and prices.
+   *
+   * @command marketplace:sync-inventory
+   * @option page-size Shopify variants per page.
+   * @option max-pages Maximum pages to scan.
+   */
+  public function syncInventory(
+    array $options = [
+      'page-size' => 50,
+      'max-pages' => 100,
+    ],
+  ): void {
+    $result = \Drupal::service('marketplace_catalog.inventory_sync')->sync(
+      (int) $options['page-size'],
+      (int) $options['max-pages'],
+    );
+
+    $this->io()->title('Shopify Inventory Synchronization');
+
+    $rows = [];
+
+    foreach ($result as $key => $value) {
+      $rows[] = [$key, is_bool($value) ? ($value ? 'Yes' : 'No') : $value];
+    }
+
+    $this->io()->table(['Metric', 'Value'], $rows);
+
+    if (!$result['complete'] || $result['failed'] > 0) {
+      $this->io()->warning('Inventory synchronization incomplete or contains failures.');
+    }
+    else {
+      $this->io()->success('Inventory synchronization completed.');
+    }
+  }
+
 }

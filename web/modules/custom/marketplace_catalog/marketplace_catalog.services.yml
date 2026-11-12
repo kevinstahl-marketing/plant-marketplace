@@ -10,3 +10,9 @@ services:
     arguments:
       - '@marketplace_catalog.importer'
       - '@entity_type.manager'
+
+  marketplace_catalog.inventory_sync:
+    class: Drupal\marketplace_catalog\Service\ShopifyInventorySync
+    arguments:
+      - '@entity_type.manager'
+      - '@shopify_connector.admin_api'

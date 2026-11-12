@@ -284,6 +284,7 @@ GRAPHQL;
     return $totals;
   }
 
+
   /**
    * Create or update variants belonging to a product.
    */
@@ -320,9 +321,20 @@ GRAPHQL;
           $action = 'created';
         }
 
-        $node->setTitle(
-          $product['title'] . ' — ' . ($variant['title'] ?? 'Default')
-        );
+        $productTitle = (string) ($product['title'] ?? '');
+        $variantTitle = (string) ($variant['title'] ?? '');
+
+        if ($variantTitle === '' ||
+            $variantTitle === 'Default Title' ||
+            $variantTitle === $productTitle) {
+          $displayTitle = $productTitle;
+        }
+        else {
+          $displayTitle = $productTitle . ' — ' . $variantTitle;
+        }
+
+        // Drupal node titles have a 255-character limit.
+        $node->setTitle(mb_substr($displayTitle, 0, 255));
 
         // Reference the parent Drupal product.
         $node->set('field_parent_product', [

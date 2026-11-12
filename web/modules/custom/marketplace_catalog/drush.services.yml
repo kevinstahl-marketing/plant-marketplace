@@ -1,0 +1,8 @@
+
+services:
+  marketplace_catalog.commands:
+    class: Drupal\marketplace_catalog\Commands\MarketplaceCatalogCommands
+    arguments:
+      - '@marketplace_catalog.importer'
+    tags:
+      - { name: drush.command }

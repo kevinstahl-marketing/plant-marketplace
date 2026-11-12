@@ -184,4 +184,58 @@ final class MarketplaceCatalogCommands extends DrushCommands {
     ));
   }
 
+
+  /**
+   * Reconcile Drupal products missing from Shopify.
+   *
+   * @command marketplace:reconcile
+   * @option apply Actually unpublish missing products.
+   * @option page-size Shopify products per page.
+   * @option max-pages Maximum pages to scan.
+   * @usage marketplace:reconcile
+   *   Preview missing products without modifying Drupal.
+   * @usage marketplace:reconcile --apply
+   *   Unpublish missing Shopify products.
+   */
+  public function reconcileMissingProducts(
+    array $options = [
+      'apply' => FALSE,
+      'page-size' => 25,
+      'max-pages' => 100,
+    ],
+  ): void {
+    $apply = filter_var($options['apply'], FILTER_VALIDATE_BOOLEAN);
+
+    $result = \Drupal::service('marketplace_catalog.reconciler')->reconcile(
+      $apply,
+      (int) $options['page-size'],
+      (int) $options['max-pages'],
+    );
+
+    $this->io()->title(
+      $apply ? 'Shopify Reconciliation — APPLY' : 'Shopify Reconciliation — DRY RUN'
+    );
+
+    $this->io()->table(
+      ['Metric', 'Count'],
+      [
+        ['Shopify products scanned', $result['scanned']],
+        ['Missing Drupal products', count($result['missing'])],
+        ['Products unpublished', $result['unpublished']],
+        ['Already unpublished', $result['already_unpublished']],
+      ],
+    );
+
+    if (!$apply) {
+      $this->io()->warning(
+        'Dry run only. No Drupal nodes were modified.'
+      );
+      return;
+    }
+
+    $this->io()->success(
+      'Reconciliation completed. Missing published products unpublished.'
+    );
+  }
+
 }

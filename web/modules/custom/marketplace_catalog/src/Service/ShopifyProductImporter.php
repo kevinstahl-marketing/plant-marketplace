@@ -308,7 +308,9 @@ GRAPHQL;
     }
 
     try {
-      return $this->runIncrementalSync($pageSize, $maxPages);
+      return \Drupal::service('marketplace_catalog.write_lock')->run(
+        fn() => $this->runIncrementalSync($pageSize, $maxPages)
+      );
     }
     finally {
       $lock->release($lockName);

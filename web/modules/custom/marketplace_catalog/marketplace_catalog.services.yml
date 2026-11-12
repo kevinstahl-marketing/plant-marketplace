@@ -16,3 +16,8 @@ services:
     arguments:
       - '@entity_type.manager'
       - '@shopify_connector.admin_api'
+
+  marketplace_catalog.write_lock:
+    class: Drupal\marketplace_catalog\Service\CatalogWriteLock
+    arguments:
+      - '@lock'

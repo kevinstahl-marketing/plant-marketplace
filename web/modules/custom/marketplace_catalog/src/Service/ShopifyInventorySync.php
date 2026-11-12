@@ -29,7 +29,9 @@ final class ShopifyInventorySync {
     }
 
     try {
-      return $this->runSync($pageSize, $maxPages);
+      return \Drupal::service('marketplace_catalog.write_lock')->run(
+        fn() => $this->runSync($pageSize, $maxPages)
+      );
     }
     finally {
       $lock->release($lockName);

@@ -1,0 +1,6 @@
+services:
+  marketplace_catalog.importer:
+    class: Drupal\marketplace_catalog\Service\ShopifyProductImporter
+    arguments:
+      - '@entity_type.manager'
+      - '@shopify_connector.admin_api'

@@ -1,0 +1,9 @@
+name: 'Marketplace Catalog'
+type: module
+description: 'Local Shopify product catalog and botanical enrichment.'
+package: Custom
+core_version_requirement: ^11
+dependencies:
+  - drupal:node
+  - drupal:field
+  - shopify_connector:shopify_connector

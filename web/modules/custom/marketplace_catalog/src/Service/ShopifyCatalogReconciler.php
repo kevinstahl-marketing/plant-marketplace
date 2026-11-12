@@ -95,6 +95,20 @@ final class ShopifyCatalogReconciler {
     int $pageSize = 25,
     int $maxPages = 100,
   ): array {
+    if ($apply) {
+      return \Drupal::service('marketplace_catalog.write_lock')->run(
+        fn() => $this->runReconciliation(TRUE, $pageSize, $maxPages)
+      );
+    }
+
+    return $this->runReconciliation(FALSE, $pageSize, $maxPages);
+  }
+
+  private function runReconciliation(
+    bool $apply,
+    int $pageSize,
+    int $maxPages,
+  ): array {
     // Audit must complete before any changes are allowed.
     $audit = $this->audit($pageSize, $maxPages);
 

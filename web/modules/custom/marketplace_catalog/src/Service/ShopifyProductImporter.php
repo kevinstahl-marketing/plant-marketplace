@@ -143,7 +143,9 @@ GRAPHQL;
    */
   public function import(int $limit = 5): array
   {
-    return $this->importProducts($this->preview($limit));
+    return \Drupal::service('marketplace_catalog.write_lock')->run(
+      fn() => $this->importProducts($this->preview($limit))
+    );
   }
 
   /**
@@ -242,6 +244,12 @@ GRAPHQL;
    * $maxPages is a safety limit for testing.
    */
   public function syncAll(int $pageSize = 25, int $maxPages = 2): array {
+    return \Drupal::service('marketplace_catalog.write_lock')->run(
+      fn() => $this->runFullSync($pageSize, $maxPages)
+    );
+  }
+
+  private function runFullSync(int $pageSize, int $maxPages): array {
     $pageSize = max(1, min(50, $pageSize));
     $maxPages = max(1, min(1000, $maxPages));
 

@@ -4,3 +4,9 @@ services:
     arguments:
       - '@entity_type.manager'
       - '@shopify_connector.admin_api'
+
+  marketplace_catalog.reconciler:
+    class: Drupal\marketplace_catalog\Service\ShopifyCatalogReconciler
+    arguments:
+      - '@marketplace_catalog.importer'
+      - '@entity_type.manager'

@@ -78,4 +78,57 @@ final class MarketplaceCatalogCommands extends DrushCommands {
     );
   }
 
+  /**
+   * Synchronize Shopify products changed since the last checkpoint.
+   *
+   * @command marketplace:sync-incremental
+   * @option page-size Products to fetch per page.
+   * @option max-pages Maximum pages to process.
+   * @usage marketplace:sync-incremental --page-size=25 --max-pages=100
+   *   Synchronize changed Shopify products.
+   */
+  public function syncIncremental(
+    array $options = [
+      'page-size' => 25,
+      'max-pages' => 100,
+    ],
+  ): void {
+    $results = $this->importer->syncIncremental(
+      (int) $options['page-size'],
+      (int) $options['max-pages'],
+    );
+
+    $this->io()->table(
+      ['Metric', 'Count'],
+      [
+        ['Pages', $results['pages']],
+        ['Products created', $results['created']],
+        ['Products updated', $results['updated']],
+        ['Products failed', $results['failed']],
+        ['Variants created', $results['variants_created']],
+        ['Variants updated', $results['variants_updated']],
+        ['Variants failed', $results['variants_failed']],
+      ],
+    );
+
+    if ($results['failed'] || $results['variants_failed']) {
+      throw new \RuntimeException(
+        'Incremental synchronization failed. Checkpoint unchanged.'
+      );
+    }
+
+    if ($results['has_more']) {
+      $this->io()->warning(
+        'Page limit reached. Checkpoint unchanged.'
+      );
+      return;
+    }
+
+    if ($results['checkpoint_advanced']) {
+      $this->io()->success(
+        'Incremental synchronization complete. Checkpoint saved.'
+      );
+    }
+  }
+
 }

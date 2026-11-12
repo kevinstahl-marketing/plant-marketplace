@@ -31,6 +31,7 @@ query MarketplaceProducts($first: Int!) {
     nodes {
       id
       title
+      updatedAt
       handle
       descriptionHtml
       vendor
@@ -73,16 +74,17 @@ GRAPHQL;
    *
    * Returns products and pagination information.
    */
-  public function fetchPage(int $limit = 25, ?string $cursor = NULL): array
+  public function fetchPage(int $limit = 25, ?string $cursor = NULL, ?string $filter = NULL): array
   {
     $limit = max(1, min(50, $limit));
 
     $query = <<<'GRAPHQL'
-query MarketplaceProductPage($first: Int!, $after: String) {
-  products(first: $first, after: $after) {
+query MarketplaceProductPage($first: Int!, $after: String, $query: String) {
+  products(first: $first, after: $after, query: $query, sortKey: UPDATED_AT) {
     nodes {
       id
       title
+      updatedAt
       handle
       descriptionHtml
       vendor
@@ -124,6 +126,7 @@ GRAPHQL;
     $data = $this->shopify->query($query, [
       'first' => $limit,
       'after' => $cursor,
+      'query' => $filter,
     ]);
 
     $connection = $data['products'] ?? [];
@@ -183,7 +186,11 @@ GRAPHQL;
         }
 
         // Update only Shopify-controlled fields.
-        $node->setTitle($product['title']);
+        $node->setTitle(mb_substr(
+          (string) ($product['title'] ?? ''),
+          0,
+          255
+        ));
         $node->set('field_shopify_handle', $product['handle'] ?? '');
         $node->set('field_vendor', $product['vendor'] ?? '');
         $node->set('field_product_type', $product['productType'] ?? '');
@@ -284,6 +291,117 @@ GRAPHQL;
     return $totals;
   }
 
+
+  /**
+   * Synchronize products updated since the last successful run.
+   *
+   * The checkpoint is advanced only after a complete successful run.
+   */
+  public function syncIncremental(int $pageSize = 25, int $maxPages = 100): array {
+    $lock = \Drupal::lock();
+    $lockName = 'marketplace_catalog.incremental_sync';
+
+    if (!$lock->acquire($lockName, 600.0)) {
+      throw new \RuntimeException(
+        'Another incremental catalog synchronization is already running.'
+      );
+    }
+
+    try {
+      return $this->runIncrementalSync($pageSize, $maxPages);
+    }
+    finally {
+      $lock->release($lockName);
+    }
+  }
+
+  /**
+   * Perform incremental synchronization while holding the lock.
+   */
+  private function runIncrementalSync(int $pageSize = 25, int $maxPages = 100): array {
+    $state = \Drupal::state();
+
+    $pageSize = max(1, min(50, $pageSize));
+    $maxPages = max(1, min(1000, $maxPages));
+
+    $checkpointKey = 'marketplace_catalog.last_incremental_sync';
+    $previous = $state->get($checkpointKey);
+
+    // Capture the upper bound before fetching any products.
+    $startedAt = time();
+
+    // Recheck the previous five minutes to reduce boundary misses.
+    $since = $previous
+      ? max(0, (int) $previous - 300)
+      : 0;
+
+    $filter = sprintf(
+      'updated_at:>=%s updated_at:<=%s',
+      gmdate('Y-m-d\TH:i:s\Z', $since),
+      gmdate('Y-m-d\TH:i:s\Z', $startedAt)
+    );
+
+    $totals = [
+      'pages' => 0,
+      'created' => 0,
+      'updated' => 0,
+      'failed' => 0,
+      'variants_created' => 0,
+      'variants_updated' => 0,
+      'variants_failed' => 0,
+      'has_more' => FALSE,
+      'checkpoint_advanced' => FALSE,
+    ];
+
+    $cursor = NULL;
+    $hasNextPage = FALSE;
+
+    do {
+      $page = $this->fetchPage($pageSize, $cursor, $filter);
+
+      if (empty($page['products'])) {
+        if (!empty($page['has_next_page'])) {
+          throw new \RuntimeException(
+            'Shopify returned an empty page with more results pending.'
+          );
+        }
+        break;
+      }
+
+      $results = $this->importProducts($page['products']);
+
+      foreach ($results as $key => $value) {
+        $totals[$key] += $value;
+      }
+
+      $totals['pages']++;
+
+      $hasNextPage = !empty($page['has_next_page']);
+      $nextCursor = $page['end_cursor'] ?? NULL;
+
+      if ($hasNextPage && (!$nextCursor || $nextCursor === $cursor)) {
+        throw new \RuntimeException(
+          'Shopify returned an invalid pagination cursor.'
+        );
+      }
+
+      $cursor = $nextCursor;
+
+    } while ($hasNextPage && $totals['pages'] < $maxPages);
+
+    $totals['has_more'] = $hasNextPage;
+
+    if (
+      !$hasNextPage &&
+      $totals['failed'] === 0 &&
+      $totals['variants_failed'] === 0
+    ) {
+      $state->set($checkpointKey, $startedAt);
+      $totals['checkpoint_advanced'] = TRUE;
+    }
+
+    return $totals;
+  }
 
   /**
    * Create or update variants belonging to a product.

@@ -1,0 +1,58 @@
+<?php
+
+/**
+ * @file
+ * Installation hooks for Marketplace Catalog.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function marketplace_catalog_install(): void {
+  $type_storage = \Drupal::entityTypeManager()->getStorage('node_type');
+
+  if (!$type_storage->load('shopify_product')) {
+    $type = $type_storage->create([
+      'type' => 'shopify_product',
+      'name' => 'Shopify Product',
+      'description' => 'Local representation of a Shopify catalog product.',
+      'new_revision' => TRUE,
+      'display_submitted' => FALSE,
+    ]);
+    $type->save();
+  }
+
+  $fields = [
+    'field_shopify_id' => ['Shopify Product ID', 'string'],
+    'field_shopify_handle' => ['Shopify Handle', 'string'],
+    'field_vendor' => ['Vendor', 'string'],
+    'field_product_type' => ['Product Type', 'string'],
+    'field_shopify_status' => ['Shopify Status', 'string'],
+    'field_description' => ['Description', 'string_long'],
+    'field_image_url' => ['Featured Image URL', 'string'],
+    'field_last_synced' => ['Last Synced', 'timestamp'],
+  ];
+
+  foreach ($fields as $name => [$label, $field_type]) {
+    $storage = \Drupal\field\Entity\FieldStorageConfig::loadByName('node', $name);
+
+    if (!$storage) {
+      $storage = \Drupal\field\Entity\FieldStorageConfig::create([
+        'field_name' => $name,
+        'entity_type' => 'node',
+        'type' => $field_type,
+        'cardinality' => 1,
+      ]);
+      $storage->save();
+    }
+
+    if (!\Drupal\field\Entity\FieldConfig::loadByName('node', 'shopify_product', $name)) {
+      \Drupal\field\Entity\FieldConfig::create([
+        'field_name' => $name,
+        'entity_type' => 'node',
+        'bundle' => 'shopify_product',
+        'label' => $label,
+      ])->save();
+    }
+  }
+}

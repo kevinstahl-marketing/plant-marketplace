@@ -1,0 +1,61 @@
+<?php
+
+/**
+ * @file
+ * Hooks for the Marketplace Catalog module.
+ */
+
+/**
+ * Implements hook_cron().
+ */
+function marketplace_catalog_cron(): void {
+  $state = \Drupal::state();
+  $logger = \Drupal::logger('marketplace_catalog');
+
+  $interval = 15 * 60;
+  $now = time();
+
+  $lastAttempt = (int) $state->get(
+    'marketplace_catalog.last_cron_attempt',
+    0
+  );
+
+  if ($now - $lastAttempt < $interval) {
+    return;
+  }
+
+  // Throttle retries even if synchronization fails.
+  $state->set('marketplace_catalog.last_cron_attempt', $now);
+
+  try {
+    $results = \Drupal::service(
+      'marketplace_catalog.importer'
+    )->syncIncremental(25, 100);
+
+    if (
+      !empty($results['has_more']) ||
+      !empty($results['failed']) ||
+      !empty($results['variants_failed']) ||
+      empty($results['checkpoint_advanced'])
+    ) {
+      $logger->warning(
+        'Catalog cron synchronization incomplete. Checkpoint unchanged.'
+      );
+      return;
+    }
+
+    $logger->notice(
+      'Catalog cron sync completed: @created created, @updated updated.',
+      [
+        '@created' => $results['created'],
+        '@updated' => $results['updated'],
+      ]
+    );
+  }
+  catch (\Throwable $exception) {
+    $logger->error(
+      'Catalog cron sync failed: @message',
+      ['@message' => $exception->getMessage()]
+    );
+  }
+}

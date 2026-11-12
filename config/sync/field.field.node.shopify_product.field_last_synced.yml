@@ -1,0 +1,19 @@
+uuid: e6a8060d-8c53-4d45-85be-9e7dab820af4
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_last_synced
+    - node.type.shopify_product
+id: node.shopify_product.field_last_synced
+field_name: field_last_synced
+entity_type: node
+bundle: shopify_product
+label: 'Last Synced'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: timestamp

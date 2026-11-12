@@ -1,0 +1,19 @@
+uuid: f5e9bd57-1f8f-4a7f-b4d6-e130fb8f45b5
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_image_url
+    - node.type.shopify_product
+id: node.shopify_product.field_image_url
+field_name: field_image_url
+entity_type: node
+bundle: shopify_product
+label: 'Featured Image URL'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

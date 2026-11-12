@@ -1,0 +1,19 @@
+uuid: 4c1d69ab-7a59-4c9e-9702-5f31c8d7f182
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_shopify_handle
+    - node.type.shopify_product
+id: node.shopify_product.field_shopify_handle
+field_name: field_shopify_handle
+entity_type: node
+bundle: shopify_product
+label: 'Shopify Handle'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

@@ -1,0 +1,20 @@
+uuid: d555392b-ad10-4f9a-bae9-acf1f0a893d1
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: node.field_variant_inventory
+field_name: field_variant_inventory
+entity_type: node
+type: integer
+settings:
+  unsigned: false
+  size: normal
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

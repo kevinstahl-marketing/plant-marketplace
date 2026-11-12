@@ -1,0 +1,21 @@
+uuid: 8518a0d2-3cf9-4788-a986-74f09f9a47a5
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_variant_available
+    - node.type.shopify_variant
+id: node.shopify_variant.field_variant_available
+field_name: field_variant_available
+entity_type: node
+bundle: shopify_variant
+label: 'Available for Sale'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

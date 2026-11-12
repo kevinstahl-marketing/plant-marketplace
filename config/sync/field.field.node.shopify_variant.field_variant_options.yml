@@ -1,0 +1,19 @@
+uuid: b32e8000-5fdf-4df8-8f56-99a765896762
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_variant_options
+    - node.type.shopify_variant
+id: node.shopify_variant.field_variant_options
+field_name: field_variant_options
+entity_type: node
+bundle: shopify_variant
+label: 'Selected Options JSON'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string_long

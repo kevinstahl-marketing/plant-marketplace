@@ -1,0 +1,11 @@
+uuid: 4ec6f85e-563d-4034-9f8d-d8284e8d6cd8
+langcode: en
+status: true
+dependencies: {  }
+name: 'Shopify Product'
+type: shopify_product
+description: 'Local representation of a Shopify catalog product.'
+help: null
+new_revision: true
+preview_mode: 1
+display_submitted: false

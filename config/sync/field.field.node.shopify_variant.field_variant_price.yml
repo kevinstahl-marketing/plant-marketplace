@@ -1,0 +1,23 @@
+uuid: 66cb97bc-97da-4a30-bf96-be9d21b44ea6
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_variant_price
+    - node.type.shopify_variant
+id: node.shopify_variant.field_variant_price
+field_name: field_variant_price
+entity_type: node
+bundle: shopify_variant
+label: Price
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: decimal

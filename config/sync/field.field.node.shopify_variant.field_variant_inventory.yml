@@ -1,0 +1,23 @@
+uuid: c222ca7e-8862-441c-85c8-802a6f3d421f
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_variant_inventory
+    - node.type.shopify_variant
+id: node.shopify_variant.field_variant_inventory
+field_name: field_variant_inventory
+entity_type: node
+bundle: shopify_variant
+label: 'Inventory Quantity'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: integer

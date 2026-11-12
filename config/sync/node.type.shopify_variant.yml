@@ -1,0 +1,11 @@
+uuid: 911b5e2a-dcb8-4891-8087-ad367c103d10
+langcode: en
+status: true
+dependencies: {  }
+name: 'Shopify Variant'
+type: shopify_variant
+description: 'Local representation of a Shopify product variant.'
+help: null
+new_revision: true
+preview_mode: 1
+display_submitted: false

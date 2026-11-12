@@ -1,0 +1,19 @@
+uuid: 7bb89c78-20e6-46cf-b6d4-91a49584ff74
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_variant_shopify_id
+    - node.type.shopify_variant
+id: node.shopify_variant.field_variant_shopify_id
+field_name: field_variant_shopify_id
+entity_type: node
+bundle: shopify_variant
+label: 'Shopify Variant ID'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

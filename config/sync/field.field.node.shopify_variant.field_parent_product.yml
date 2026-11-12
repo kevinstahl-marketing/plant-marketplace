@@ -1,0 +1,24 @@
+uuid: c268567b-7553-460e-a1a4-0c5a0dfee1dc
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_parent_product
+    - node.type.shopify_product
+    - node.type.shopify_variant
+id: node.shopify_variant.field_parent_product
+field_name: field_parent_product
+entity_type: node
+bundle: shopify_variant
+label: 'Parent Shopify Product'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:node'
+  handler_settings:
+    target_bundles:
+      shopify_product: shopify_product
+field_type: entity_reference

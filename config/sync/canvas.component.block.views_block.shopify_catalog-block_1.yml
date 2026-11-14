@@ -1,0 +1,26 @@
+uuid: 8ef8a33a-5912-46ad-8d83-f52ea99120f0
+langcode: en
+status: true
+dependencies:
+  config:
+    - views.view.shopify_catalog
+  module:
+    - views
+active_version: 3605a58a4278938e
+versioned_properties:
+  active:
+    settings:
+      default_settings:
+        id: 'views_block:shopify_catalog-block_1'
+        label: 'Featured Products'
+        label_display: '0'
+        provider: views
+        views_label: ''
+        items_per_page: null
+    fallback_metadata:
+      slot_definitions: null
+label: 'Featured Products'
+id: block.views_block.shopify_catalog-block_1
+provider: views
+source: block
+source_local_id: 'views_block:shopify_catalog-block_1'

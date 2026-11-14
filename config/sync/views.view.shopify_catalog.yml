@@ -8,11 +8,10 @@ dependencies:
     - field.storage.node.field_product_type
     - node.type.shopify_product
   module:
-    - marketplace_catalog
     - node
     - user
 id: shopify_catalog
-label: 'Shopify Catalog'
+label: 'Featured Products'
 module: views
 description: ''
 tag: ''
@@ -124,7 +123,7 @@ display:
           empty_zero: false
           hide_alter_empty: true
           click_sort_column: value
-          type: marketplace_shopify_image
+          type: string
           settings: {  }
           group_column: value
           group_columns: {  }
@@ -303,6 +302,24 @@ display:
       relationships: {  }
       header: {  }
       footer: {  }
+      display_extenders: {  }
+    cache_metadata:
+      max-age: -1
+      contexts:
+        - 'languages:language_content'
+        - 'languages:language_interface'
+        - url.query_args
+        - 'user.node_grants:view'
+        - user.permissions
+      tags:
+        - 'config:field.storage.node.field_image_url'
+        - 'config:field.storage.node.field_product_type'
+  block_1:
+    id: block_1
+    display_title: Block
+    display_plugin: block
+    position: 2
+    display_options:
       display_extenders: {  }
     cache_metadata:
       max-age: -1

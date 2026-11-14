@@ -1,0 +1,54 @@
+uuid: 5914c53e-0cc7-43b6-b170-45b33c1149b4
+langcode: en
+status: true
+dependencies:
+  theme:
+    - marketplace
+active_version: 6b634ee2260c78c4
+versioned_properties:
+  active:
+    settings:
+      prop_field_definitions:
+        label:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: 'Shop Plants'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        description:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: 'Explore our plant collection'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        url:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: /shop
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+    fallback_metadata:
+      slot_definitions: {  }
+label: 'Discovery Shortcut'
+id: sdc.marketplace.discovery-shortcut
+provider: marketplace
+source: sdc
+source_local_id: 'marketplace:discovery-shortcut'

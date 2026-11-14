@@ -1,0 +1,42 @@
+uuid: ee240a25-5b6e-4780-9730-57a4d5c6ac83
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.product_card
+    - field.field.node.shopify_variant.field_parent_product
+    - field.field.node.shopify_variant.field_variant_available
+    - field.field.node.shopify_variant.field_variant_compare_price
+    - field.field.node.shopify_variant.field_variant_inventory
+    - field.field.node.shopify_variant.field_variant_options
+    - field.field.node.shopify_variant.field_variant_price
+    - field.field.node.shopify_variant.field_variant_shopify_id
+    - field.field.node.shopify_variant.field_variant_sku
+    - node.type.shopify_variant
+  module:
+    - layout_builder
+    - user
+third_party_settings:
+  layout_builder:
+    enabled: false
+    allow_custom: false
+id: node.shopify_variant.product_card
+targetEntityType: node
+bundle: shopify_variant
+mode: product_card
+content:
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+hidden:
+  field_parent_product: true
+  field_variant_available: true
+  field_variant_compare_price: true
+  field_variant_inventory: true
+  field_variant_options: true
+  field_variant_price: true
+  field_variant_shopify_id: true
+  field_variant_sku: true
+  search_api_excerpt: true

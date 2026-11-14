@@ -1,0 +1,72 @@
+uuid: 318d3c62-7285-47c1-a5ca-bb9d876187c9
+langcode: en
+status: true
+dependencies:
+  theme:
+    - marketplace
+active_version: d1ec8b7f77e790af
+versioned_properties:
+  active:
+    settings:
+      prop_field_definitions:
+        eyebrow:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: 'Explore the marketplace'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        heading:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: 'What are you looking for?'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        search_placeholder:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: 'Search plants, seeds, cultivars...'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        search_action:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: /search
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+    fallback_metadata:
+      slot_definitions:
+        popular_searches:
+          title: 'Popular Searches'
+          description: 'Search chips displayed beneath the search box.'
+        shortcuts:
+          title: 'Navigation Shortcuts'
+          description: 'Marketplace category and discovery links.'
+label: 'Discovery Cockpit'
+id: sdc.marketplace.discovery-cockpit
+provider: marketplace
+source: sdc
+source_local_id: 'marketplace:discovery-cockpit'

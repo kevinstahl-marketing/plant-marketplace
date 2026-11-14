@@ -1,0 +1,25 @@
+name: Product Card
+description: Reusable product card for catalog listings and featured products.
+status: stable
+
+props:
+  type: object
+  properties:
+    title:
+      type: string
+      title: Product title
+    image_url:
+      type: string
+      title: Image URL
+    url:
+      type: string
+      title: Product URL
+    category:
+      type: string
+      title: Category
+    price:
+      type: string
+      title: Price
+    available:
+      type: boolean
+      title: Available

@@ -1,0 +1,16 @@
+{#
+/**
+ * Product card view mode.
+ * Product data is supplied by Drupal.
+ * Presentation belongs to the reusable SDC.
+ */
+#}
+
+{{ include('marketplace:product-card', {
+  title: node.label,
+  image_url: node.field_image_url.value,
+  url: url('entity.node.canonical', {'node': node.id}),
+  category: node.field_product_type.value,
+  price: product_price,
+  available: product_available
+}, with_context = false) }}

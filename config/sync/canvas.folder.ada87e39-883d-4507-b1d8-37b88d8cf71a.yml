@@ -6,9 +6,16 @@ dependencies:
     - canvas.component.js.marketplace_hero
     - canvas.component.marker.page_content
     - canvas.component.sdc.marketplace.button
+    - canvas.component.sdc.marketplace.carousel
+    - canvas.component.sdc.marketplace.category-card
+    - canvas.component.sdc.marketplace.category-carousel
+    - canvas.component.sdc.marketplace.discovery-cockpit
+    - canvas.component.sdc.marketplace.discovery-shortcut
     - canvas.component.sdc.marketplace.header
     - canvas.component.sdc.marketplace.hero
+    - canvas.component.sdc.marketplace.product-card
     - canvas.component.sdc.marketplace.search-box
+    - canvas.component.sdc.marketplace.search-chip
     - canvas.component.sdc.navigation.message
     - canvas.component.sdc.navigation.title
     - canvas.component.sdc.olivero.teaser
@@ -19,9 +26,16 @@ items:
   - js.marketplace_hero
   - marker.page_content
   - sdc.marketplace.button
+  - sdc.marketplace.carousel
+  - sdc.marketplace.category-card
+  - sdc.marketplace.category-carousel
+  - sdc.marketplace.discovery-cockpit
+  - sdc.marketplace.discovery-shortcut
   - sdc.marketplace.header
   - sdc.marketplace.hero
+  - sdc.marketplace.product-card
   - sdc.marketplace.search-box
+  - sdc.marketplace.search-chip
   - sdc.navigation.message
   - sdc.navigation.title
   - sdc.olivero.teaser

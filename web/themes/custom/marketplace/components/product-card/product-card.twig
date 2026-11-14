@@ -1,0 +1,38 @@
+<article class="product-card">
+  <a class="product-card__link" href="{{ url|default('#') }}">
+    <div class="product-card__media">
+      {% if image_url %}
+        <img
+          class="product-card__image"
+          src="{{ image_url }}"
+          alt="{{ title }}"
+          loading="lazy"
+        >
+      {% endif %}
+    </div>
+
+    <div class="product-card__content">
+      {% if category %}
+        <span class="product-card__category">
+          {{ category }}
+        </span>
+      {% endif %}
+
+      <h3 class="product-card__title">
+        {{ title }}
+      </h3>
+
+      {% if price %}
+        <span class="product-card__price">
+          {{ price }}
+        </span>
+      {% endif %}
+
+      {% if available is defined and not available %}
+        <span class="product-card__availability">
+          Sold out
+        </span>
+      {% endif %}
+    </div>
+  </a>
+</article>

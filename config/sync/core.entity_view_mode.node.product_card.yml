@@ -1,0 +1,11 @@
+uuid: 4ac44e04-2c17-4b17-b82d-2a389e130d9a
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: node.product_card
+label: 'Product Card'
+description: null
+targetEntityType: node
+cache: true

@@ -1,0 +1,42 @@
+uuid: a0c5415b-7c1f-429e-a811-835f08138d05
+langcode: en
+status: true
+dependencies:
+  theme:
+    - marketplace
+active_version: 7ee8c925e8d0a231
+versioned_properties:
+  active:
+    settings:
+      prop_field_definitions:
+        label:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: 'Mango trees'
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+        query:
+          required: false
+          field_type: string
+          field_storage_settings: {  }
+          field_instance_settings: {  }
+          field_widget: string_textfield
+          default_value:
+            -
+              value: mango
+          expression: ℹ︎string␟value
+          derived_schema_metadata:
+            string_shape: {  }
+    fallback_metadata:
+      slot_definitions: {  }
+label: 'Search Chip'
+id: sdc.marketplace.search-chip
+provider: marketplace
+source: sdc
+source_local_id: 'marketplace:search-chip'

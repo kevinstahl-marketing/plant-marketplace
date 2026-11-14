@@ -1,0 +1,50 @@
+<?php
+
+/**
+ * Prepares catalog data for the product card view mode.
+ */
+function marketplace_preprocess_node__shopify_product__product_card(array &$variables): void {
+  $product = $variables['node'];
+
+  $variables['product_price'] = '';
+  $variables['product_available'] = FALSE;
+
+  $storage = \Drupal::entityTypeManager()->getStorage('node');
+
+  $variants = $storage->loadByProperties([
+    'type' => 'shopify_variant',
+    'field_parent_product' => $product->id(),
+  ]);
+
+  $prices = [];
+  $available_prices = [];
+
+  foreach ($variants as $variant) {
+    if ($variant->get('field_variant_price')->isEmpty()) {
+      continue;
+    }
+
+    $price = (float) $variant->get('field_variant_price')->value;
+    $prices[] = $price;
+
+    if ((bool) $variant->get('field_variant_available')->value) {
+      $available_prices[] = $price;
+    }
+
+    $variables['#cache']['tags'] = array_merge(
+      $variables['#cache']['tags'] ?? [],
+      $variant->getCacheTags()
+    );
+  }
+
+  $variables['product_available'] = !empty($available_prices);
+
+  if ($prices) {
+    $minimum = min($prices);
+    $prefix = count(array_unique($prices)) > 1 ? 'From ' : '';
+    $variables['product_price'] = $prefix . '$' . number_format($minimum, 2);
+  }
+
+  // Invalidate the card when variants are added or removed.
+  $variables['#cache']['tags'][] = 'node_list:shopify_variant';
+}

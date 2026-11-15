@@ -27,7 +27,13 @@
     {% endif %}
 
     <main id="main-content" class="site-main">
-        {{ page.content }}
+        {% if is_front %}
+            {{ page.content }}
+        {% else %}
+            <div class="container">
+                {{ page.content }}
+            </div>
+        {% endif %}
     </main>
 
     {% if page.footer %}

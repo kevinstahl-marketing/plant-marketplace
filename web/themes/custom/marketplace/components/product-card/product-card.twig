@@ -22,17 +22,11 @@
         {{ title }}
       </h3>
 
-      {% if price %}
-        <span class="product-card__price">
-          {{ price }}
-        </span>
-      {% endif %}
-
-      {% if available is defined and not available %}
-        <span class="product-card__availability">
-          Sold out
-        </span>
-      {% endif %}
+      {{ include('marketplace:product-price', {
+        price: price,
+        available: available,
+        size: 'medium'
+      }, with_context = false) }}
     </div>
   </a>
 </article>

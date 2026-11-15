@@ -1,0 +1,37 @@
+{% set gallery %}
+  {{ include('marketplace:product-gallery', {
+    image_url: node.field_image_url.value,
+    alt: node.label,
+    aspect_ratio: 'portrait',
+    image_fit: 'contain',
+    corner_style: 'rounded'
+  }, with_context = false) }}
+{% endset %}
+
+{% set information %}
+  <div class="product-information">
+    {% if node.field_product_type.value %}
+      <p class="product-information__category">
+        {{ node.field_product_type.value }}
+      </p>
+    {% endif %}
+
+    <h1 class="product-information__title">
+      {{ node.label }}
+    </h1>
+
+    {{ content.marketplace_product_purchase }}
+
+    {% if node.field_description.value %}
+      <div class="product-information__description">
+        {{ product_description }}
+      </div>
+    {% endif %}
+  </div>
+{% endset %}
+
+{{ include('marketplace:product-detail', {
+  layout: 'media-wide',
+  gallery: gallery,
+  information: information
+}, with_context = false) }}

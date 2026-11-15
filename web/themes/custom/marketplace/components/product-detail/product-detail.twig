@@ -1,0 +1,11 @@
+{% set display_layout = layout|default('balanced') %}
+
+<article class="product-detail product-detail--{{ display_layout }}">
+  <div class="product-detail__gallery">
+    {{ gallery }}
+  </div>
+
+  <div class="product-detail__information">
+    {{ information }}
+  </div>
+</article>

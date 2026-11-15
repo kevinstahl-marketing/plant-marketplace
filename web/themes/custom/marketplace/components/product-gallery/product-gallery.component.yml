@@ -1,0 +1,35 @@
+name: Product Gallery
+description: Reusable, configurable product image gallery.
+status: stable
+
+props:
+  type: object
+  properties:
+    image_url:
+      type: string
+      title: Featured image URL
+    alt:
+      type: string
+      title: Image description
+    aspect_ratio:
+      type: string
+      title: Aspect ratio
+      enum:
+        - portrait
+        - square
+        - landscape
+      default: portrait
+    image_fit:
+      type: string
+      title: Image fit
+      enum:
+        - contain
+        - cover
+      default: contain
+    corner_style:
+      type: string
+      title: Corner style
+      enum:
+        - rounded
+        - square
+      default: rounded

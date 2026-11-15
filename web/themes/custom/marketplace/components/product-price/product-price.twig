@@ -1,0 +1,11 @@
+{% set display_size = size|default('medium') %}
+
+<div class="product-price product-price--{{ display_size }}">
+  {% if price %}
+    <span class="product-price__amount">{{ price }}</span>
+  {% endif %}
+
+  {% if available is defined and not available %}
+    <span class="product-price__status">Sold out</span>
+  {% endif %}
+</div>

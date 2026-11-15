@@ -1,0 +1,21 @@
+name: Product Detail
+description: Responsive product detail layout with composable content.
+status: stable
+
+props:
+  type: object
+  properties:
+    layout:
+      type: string
+      title: Layout
+      enum:
+        - balanced
+        - media-wide
+        - information-wide
+      default: balanced
+
+slots:
+  gallery:
+    title: Product gallery
+  information:
+    title: Product information

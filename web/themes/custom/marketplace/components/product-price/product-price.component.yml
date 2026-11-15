@@ -1,0 +1,21 @@
+name: Product Price
+description: Reusable price and availability display.
+status: stable
+
+props:
+  type: object
+  properties:
+    price:
+      type: string
+      title: Price
+    available:
+      type: boolean
+      title: Available
+    size:
+      type: string
+      title: Display size
+      enum:
+        - small
+        - medium
+        - large
+      default: medium

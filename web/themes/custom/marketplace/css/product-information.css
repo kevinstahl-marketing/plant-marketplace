@@ -1,0 +1,35 @@
+.product-information {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.product-information__category {
+  margin: 0;
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-muted);
+}
+
+.product-information__title {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(1.8rem, 3vw, 3rem);
+  font-weight: 400;
+  line-height: 1.15;
+}
+
+.product-information__description {
+  line-height: 1.75;
+  color: var(--color-text);
+}
+
+.product-information__description p {
+  margin-block: 0 1rem;
+}
+
+.product-information__description ul,
+.product-information__description ol {
+  padding-inline-start: 1.5rem;
+}

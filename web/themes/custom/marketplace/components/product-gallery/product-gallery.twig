@@ -1,0 +1,21 @@
+{% set ratio = aspect_ratio|default('portrait') %}
+{% set fit = image_fit|default('contain') %}
+{% set corners = corner_style|default('rounded') %}
+
+<div class="product-gallery product-gallery--{{ ratio }} product-gallery--{{ fit }} product-gallery--corners-{{ corners }}">
+  <div class="product-gallery__main">
+    {% if image_url %}
+      <img
+        class="product-gallery__image"
+        src="{{ image_url }}"
+        alt="{{ alt|default('Product image') }}"
+        loading="eager"
+        fetchpriority="high"
+      >
+    {% else %}
+      <div class="product-gallery__placeholder">
+        Image coming soon
+      </div>
+    {% endif %}
+  </div>
+</div>

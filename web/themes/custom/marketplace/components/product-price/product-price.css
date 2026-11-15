@@ -1,0 +1,28 @@
+.product-price {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+
+.product-price__amount {
+  font-weight: 600;
+}
+
+.product-price--small {
+  font-size: 0.875rem;
+}
+
+.product-price--medium {
+  font-size: 1rem;
+}
+
+.product-price--large {
+  font-size: clamp(1.4rem, 2vw, 1.8rem);
+}
+
+.product-price__status {
+  font-size: 0.8rem;
+  font-weight: 400;
+  opacity: 0.65;
+}

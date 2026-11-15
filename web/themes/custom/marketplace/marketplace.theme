@@ -6,45 +6,38 @@
 function marketplace_preprocess_node__shopify_product__product_card(array &$variables): void {
   $product = $variables['node'];
 
-  $variables['product_price'] = '';
-  $variables['product_available'] = FALSE;
+  $provider = \Drupal::service('marketplace_catalog.variant_provider');
+  $summary = $provider->getSummary($product);
 
-  $storage = \Drupal::entityTypeManager()->getStorage('node');
+  $variables['product_price'] = $summary['price'];
+  $variables['product_available'] = $summary['available'];
 
-  $variants = $storage->loadByProperties([
-    'type' => 'shopify_variant',
-    'field_parent_product' => $product->id(),
-  ]);
-
-  $prices = [];
-  $available_prices = [];
-
-  foreach ($variants as $variant) {
-    if ($variant->get('field_variant_price')->isEmpty()) {
-      continue;
-    }
-
-    $price = (float) $variant->get('field_variant_price')->value;
-    $prices[] = $price;
-
-    if ((bool) $variant->get('field_variant_available')->value) {
-      $available_prices[] = $price;
-    }
-
+  foreach ($summary['variants'] as $variant) {
     $variables['#cache']['tags'] = array_merge(
       $variables['#cache']['tags'] ?? [],
       $variant->getCacheTags()
     );
   }
 
-  $variables['product_available'] = !empty($available_prices);
-
-  if ($prices) {
-    $minimum = min($prices);
-    $prefix = count(array_unique($prices)) > 1 ? 'From ' : '';
-    $variables['product_price'] = $prefix . '$' . number_format($minimum, 2);
-  }
-
-  // Invalidate the card when variants are added or removed.
   $variables['#cache']['tags'][] = 'node_list:shopify_variant';
+}
+
+/**
+ * Prepares the Shopify product's full content display.
+ */
+function marketplace_preprocess_node__shopify_product__full(array &$variables): void {
+  $product = $variables['node'];
+
+  $description = $product->get('field_description')->value ?? '';
+
+  $variables['product_description'] = [
+    '#markup' => \Drupal\Component\Utility\Xss::filter(
+      $description,
+      [
+        'p', 'br', 'strong', 'em', 'b', 'i',
+        'ul', 'ol', 'li', 'a', 'h2', 'h3',
+        'h4', 'blockquote',
+      ]
+    ),
+  ];
 }

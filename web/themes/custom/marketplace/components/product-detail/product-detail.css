@@ -1,0 +1,35 @@
+.product-detail {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: start;
+  padding-block: clamp(1.5rem, 4vw, 4rem);
+}
+
+.product-detail--media-wide {
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+}
+
+.product-detail--information-wide {
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+}
+
+.product-detail__gallery,
+.product-detail__information {
+  min-width: 0;
+}
+
+.product-detail__information {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+@media (max-width: 749px) {
+  .product-detail,
+  .product-detail--media-wide,
+  .product-detail--information-wide {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}

@@ -128,3 +128,55 @@ function marketplace_catalog_inventory_cron(): void {
     $lock->release($lockName);
   }
 }
+
+/**
+ * Implements hook_ENTITY_TYPE_view() for nodes.
+ */
+function marketplace_catalog_node_view(array &$build, \Drupal\Core\Entity\EntityInterface $entity, \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display, string $view_mode): void {
+  if ($entity->bundle() !== 'shopify_product' || $view_mode !== 'full') {
+    return;
+  }
+
+  $provider = \Drupal::service('marketplace_catalog.variant_provider');
+  $summary = $provider->getSummary($entity);
+
+  $build['marketplace_product_purchase'] = [
+    '#type' => 'container',
+    '#attributes' => [
+      'class' => ['marketplace-product-purchase'],
+    ],
+    'price' => [
+      '#type' => 'html_tag',
+      '#tag' => 'p',
+      '#value' => $summary['price'],
+      '#attributes' => [
+        'class' => ['marketplace-product-price'],
+      ],
+    ],
+    'availability' => [
+      '#type' => 'html_tag',
+      '#tag' => 'p',
+      '#value' => $summary['available']
+        ? t('In stock')
+        : t('Out of stock'),
+    ],
+    '#weight' => 20,
+  ];
+
+  // Render the Shopify purchase form for this product.
+  $build['marketplace_product_purchase']['form'] =
+    \Drupal::formBuilder()->getForm(
+      \Drupal\marketplace_cart\Form\AddToCartForm::class,
+      NULL,
+      (int) $entity->id()
+    );
+
+  foreach ($summary['variants'] as $variant) {
+    $build['#cache']['tags'] = array_merge(
+      $build['#cache']['tags'] ?? [],
+      $variant->getCacheTags()
+    );
+  }
+
+  $build['#cache']['tags'][] = 'node_list:shopify_variant';
+}

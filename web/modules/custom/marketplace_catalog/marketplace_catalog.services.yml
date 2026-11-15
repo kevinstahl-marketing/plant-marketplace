@@ -21,3 +21,8 @@ services:
     class: Drupal\marketplace_catalog\Service\CatalogWriteLock
     arguments:
       - '@lock'
+
+  marketplace_catalog.variant_provider:
+    class: Drupal\marketplace_catalog\Service\ProductVariantProvider
+    arguments:
+      - '@entity_type.manager'

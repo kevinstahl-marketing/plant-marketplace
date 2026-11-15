@@ -1,0 +1,15 @@
+marketplace_cart.test:
+  path: '/marketplace-cart-test'
+  defaults:
+    _controller: '\Drupal\marketplace_cart\Controller\CartTestController::test'
+    _title: 'Shopify Cart Test'
+  requirements:
+    _permission: 'access content'
+
+marketplace_cart.cart:
+  path: '/cart'
+  defaults:
+    _form: '\Drupal\marketplace_cart\Form\CartForm'
+    _title: 'Your Cart'
+  requirements:
+    _permission: 'access content'

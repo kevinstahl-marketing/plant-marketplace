@@ -1,0 +1,12 @@
+services:
+  marketplace_cart.storefront_client:
+    class: Drupal\marketplace_cart\Service\ShopifyStorefrontClient
+    arguments:
+      - '@http_client'
+      - '@state'
+
+  marketplace_cart.cart_manager:
+    class: Drupal\marketplace_cart\Service\CartManager
+    arguments:
+      - '@marketplace_cart.storefront_client'
+      - '@request_stack'

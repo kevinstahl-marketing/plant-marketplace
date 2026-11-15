@@ -1,0 +1,7 @@
+name: Marketplace Cart
+type: module
+description: 'Shopify Storefront API cart integration.'
+package: Marketplace
+core_version_requirement: ^11
+dependencies:
+  - marketplace_catalog:marketplace_catalog

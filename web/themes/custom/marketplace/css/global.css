@@ -117,3 +117,15 @@
 }
 
 
+/* ========================================
+   PRODUCT STYLING
+======================================== */
+
+.marketplace-product-image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: contain;
+  background: #f7f7f5;
+  border-radius: 12px;
+}

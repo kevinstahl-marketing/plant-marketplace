@@ -9,6 +9,9 @@
  * Implements hook_cron().
  */
 function marketplace_catalog_cron(): void {
+  // Inventory has its own five-minute throttle.
+  marketplace_catalog_inventory_cron();
+
   $state = \Drupal::state();
   $logger = \Drupal::logger('marketplace_catalog');
 
@@ -57,5 +60,71 @@ function marketplace_catalog_cron(): void {
       'Catalog cron sync failed: @message',
       ['@message' => $exception->getMessage()]
     );
+  }
+}
+
+/**
+ * Implements hook_cron() for inventory synchronization.
+ *
+ * Runs at most once every five minutes when Drupal cron executes.
+ */
+function marketplace_catalog_inventory_cron(): void {
+  $state = \Drupal::state();
+  $now = \Drupal::time()->getRequestTime();
+
+  $lastAttempt = (int) $state->get(
+    'marketplace_catalog.last_inventory_attempt',
+    0
+  );
+
+  if ($now - $lastAttempt < 300) {
+    return;
+  }
+
+  $lock = \Drupal::lock();
+  $lockName = 'marketplace_catalog.inventory_cron';
+
+  if (!$lock->acquire($lockName, 600.0)) {
+    return;
+  }
+
+  try {
+    // Recheck after acquiring the lock.
+    $lastAttempt = (int) $state->get(
+      'marketplace_catalog.last_inventory_attempt',
+      0
+    );
+
+    if ($now - $lastAttempt < 300) {
+      return;
+    }
+
+    $state->set('marketplace_catalog.last_inventory_attempt', $now);
+
+    $result = \Drupal::service(
+      'marketplace_catalog.inventory_sync'
+    )->sync(50, 100);
+
+    if ($result['complete'] && $result['failed'] === 0) {
+      $state->set(
+        'marketplace_catalog.last_inventory_success',
+        $now
+      );
+    }
+    else {
+      \Drupal::logger('marketplace_catalog')->warning(
+        'Inventory cron incomplete: @result',
+        ['@result' => json_encode($result)]
+      );
+    }
+  }
+  catch (\Throwable $e) {
+    \Drupal::logger('marketplace_catalog')->error(
+      'Inventory cron failed: @message',
+      ['@message' => $e->getMessage()]
+    );
+  }
+  finally {
+    $lock->release($lockName);
   }
 }

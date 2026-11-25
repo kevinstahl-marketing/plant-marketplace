@@ -55,6 +55,18 @@ class Auction extends ContentEntityBase {
     $fields['description'] = BaseFieldDefinition::create('text_long')
       ->setLabel(t('Description'));
 
+    $fields['images'] = BaseFieldDefinition::create('entity_reference')
+      ->setLabel(t('Auction images'))
+      ->setDescription(t('Photographs of the auction specimen.'))
+      ->setSetting('target_type', 'media')
+      ->setSetting('handler', 'default:media')
+      ->setSetting('handler_settings', [
+        'target_bundles' => [
+          'image' => 'image',
+        ],
+      ])
+      ->setCardinality(8);
+
     $fields['status'] = BaseFieldDefinition::create('list_string')
       ->setLabel(t('Auction status'))
       ->setSetting('allowed_values', [

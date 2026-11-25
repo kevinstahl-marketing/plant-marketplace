@@ -12,3 +12,4 @@ dependencies:
   - drupal:image
   - drupal:views
   - marketplace_seller:marketplace_seller
+  - drupal:media

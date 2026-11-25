@@ -68,3 +68,28 @@ function marketplace_auction_update_11001(): string {
 
   return "Linked $linked auctions to seller profiles; skipped $skipped.";
 }
+
+
+/**
+ * Adds image media references to auction entities.
+ */
+function marketplace_auction_update_11002(): string {
+  $manager = \Drupal::entityDefinitionUpdateManager();
+
+  if (!$manager->getFieldStorageDefinition(
+    'images',
+    'marketplace_auction'
+  )) {
+    $definition = \Drupal::service('entity_field.manager')
+      ->getFieldStorageDefinitions('marketplace_auction')['images'];
+
+    $manager->installFieldStorageDefinition(
+      'images',
+      'marketplace_auction',
+      'marketplace_auction',
+      $definition
+    );
+  }
+
+  return 'Auction image references installed.';
+}

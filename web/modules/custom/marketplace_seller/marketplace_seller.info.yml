@@ -1,0 +1,12 @@
+name: Marketplace Seller
+type: module
+description: 'Seller profiles, marketplace identity, and seller onboarding.'
+package: Marketplace
+core_version_requirement: ^11
+dependencies:
+  - drupal:user
+  - drupal:field
+  - drupal:options
+  - drupal:text
+  - drupal:image
+  - drupal:views

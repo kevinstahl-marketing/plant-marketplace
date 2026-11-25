@@ -1,0 +1,12 @@
+administer marketplace sellers:
+  title: 'Administer marketplace sellers'
+  restrict access: true
+
+view marketplace sellers:
+  title: 'View marketplace sellers'
+
+create marketplace seller profile:
+  title: 'Create marketplace seller profile'
+
+edit own marketplace seller profile:
+  title: 'Edit own marketplace seller profile'

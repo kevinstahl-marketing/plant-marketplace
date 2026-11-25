@@ -1,0 +1,13 @@
+name: Marketplace Auction
+type: module
+description: 'Auction listings, bidding, and auction lifecycle management.'
+package: Marketplace
+core_version_requirement: ^11
+dependencies:
+  - drupal:user
+  - drupal:field
+  - drupal:datetime
+  - drupal:options
+  - drupal:text
+  - drupal:image
+  - drupal:views

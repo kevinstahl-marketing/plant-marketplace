@@ -1,0 +1,15 @@
+administer marketplace auctions:
+  title: 'Administer marketplace auctions'
+  restrict access: true
+
+view marketplace auctions:
+  title: 'View marketplace auctions'
+
+create marketplace auctions:
+  title: 'Create marketplace auctions'
+
+edit own marketplace auctions:
+  title: 'Edit own marketplace auctions'
+
+place marketplace bids:
+  title: 'Place marketplace bids'

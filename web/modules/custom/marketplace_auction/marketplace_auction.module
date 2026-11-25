@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * @file
+ * Hooks for the Marketplace Auction module.
+ */
+
+/**
+ * Implements hook_cron().
+ */
+function marketplace_auction_cron(): void {
+  $results = \Drupal::service('marketplace_auction.lifecycle')
+    ->processDueAuctions();
+
+  if ($results['opened'] || $results['closed']) {
+    \Drupal::logger('marketplace_auction')->notice(
+      'Auction lifecycle: @opened opened, @closed closed.',
+      [
+        '@opened' => $results['opened'],
+        '@closed' => $results['closed'],
+      ]
+    );
+  }
+}

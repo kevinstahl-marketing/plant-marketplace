@@ -5,3 +5,10 @@ services:
       - '@entity_type.manager'
       - '@database'
       - '@datetime.time'
+
+  marketplace_auction.lifecycle:
+    class: Drupal\marketplace_auction\Service\AuctionLifecycle
+    arguments:
+      - '@entity_type.manager'
+      - '@database'
+      - '@datetime.time'

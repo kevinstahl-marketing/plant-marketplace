@@ -1,0 +1,70 @@
+<?php
+
+/**
+ * @file
+ * Installation and update routines for Marketplace Auction.
+ */
+
+/**
+ * Add seller profile references to existing auctions.
+ */
+function marketplace_auction_update_11001(): string {
+  $manager = \Drupal::entityDefinitionUpdateManager();
+
+  $definition = \Drupal::service('entity_field.manager')
+    ->getFieldStorageDefinitions('marketplace_auction')['seller_profile_id'];
+
+  if (!$manager->getFieldStorageDefinition(
+    'seller_profile_id',
+    'marketplace_auction'
+  )) {
+    $manager->installFieldStorageDefinition(
+      'seller_profile_id',
+      'marketplace_auction',
+      'marketplace_auction',
+      $definition
+    );
+  }
+
+  $database = \Drupal::database();
+
+  $auctions = $database
+    ->select('marketplace_auction', 'a')
+    ->fields('a', ['id', 'seller_id'])
+    ->isNull('seller_profile_id')
+    ->execute();
+
+  $linked = 0;
+  $skipped = 0;
+
+  foreach ($auctions as $auction) {
+    $profiles = $database
+      ->select('marketplace_seller', 's')
+      ->fields('s', ['id'])
+      ->condition('user_id', $auction->seller_id)
+      ->range(0, 2)
+      ->execute()
+      ->fetchCol();
+
+    // Do not guess if an owner has zero or multiple profiles.
+    if (count($profiles) !== 1) {
+      $skipped++;
+      continue;
+    }
+
+    $database->update('marketplace_auction')
+      ->fields([
+        'seller_profile_id' => (int) $profiles[0],
+      ])
+      ->condition('id', $auction->id)
+      ->execute();
+
+    $linked++;
+  }
+
+  \Drupal::entityTypeManager()
+    ->getStorage('marketplace_auction')
+    ->resetCache();
+
+  return "Linked $linked auctions to seller profiles; skipped $skipped.";
+}

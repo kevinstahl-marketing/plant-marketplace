@@ -48,6 +48,10 @@ class Auction extends ContentEntityBase {
       ->setSetting('target_type', 'user')
       ->setRequired(TRUE);
 
+    $fields['seller_profile_id'] = BaseFieldDefinition::create('entity_reference')
+      ->setLabel(t('Seller profile'))
+      ->setSetting('target_type', 'marketplace_seller');
+
     $fields['description'] = BaseFieldDefinition::create('text_long')
       ->setLabel(t('Description'));
 

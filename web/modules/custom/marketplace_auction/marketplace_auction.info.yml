@@ -11,3 +11,4 @@ dependencies:
   - drupal:text
   - drupal:image
   - drupal:views
+  - marketplace_seller:marketplace_seller

@@ -44,6 +44,34 @@ final class AuctionController extends ControllerBase {
       '#value' => \Drupal\Component\Utility\Html::escape($auction->label()),
     ];
 
+    $build['images'] = [
+      '#type' => 'container',
+      '#attributes' => [
+        'class' => ['auction-images'],
+      ],
+    ];
+
+    foreach ($auction->get('images')->referencedEntities() as $media) {
+      if (!$media->access('view', $account)
+        || !$media->hasField('field_media_image')) {
+        continue;
+      }
+
+      $image = $media->get('field_media_image')->first();
+      $file = $image?->entity;
+
+      if (!$file) {
+        continue;
+      }
+
+      $build['images'][] = [
+        '#theme' => 'image_style',
+        '#style_name' => 'large',
+        '#uri' => $file->getFileUri(),
+        '#alt' => $image->alt ?? '',
+      ];
+    }
+
     $build['description'] = [
       '#type' => 'processed_text',
       '#text' => $auction->get('description')->value ?? '',

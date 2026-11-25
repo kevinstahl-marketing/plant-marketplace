@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Drupal\marketplace_auction\Form;
 
 use Drupal\Core\Form\FormBase;
+use Drupal\marketplace_auction\Service\AuctionMediaManager;
 use Drupal\Core\Form\FormStateInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
@@ -58,6 +59,46 @@ final class AuctionCreateForm extends FormBase {
       '#rows' => 6,
     ];
 
+    $form['photos'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Listing photographs'),
+      '#open' => TRUE,
+      '#tree' => TRUE,
+      '#description' => $this->t(
+        'Upload up to eight photographs. The first photograph is your cover image.'
+      ),
+    ];
+
+    for ($i = 0; $i < AuctionMediaManager::MAX_IMAGES; $i++) {
+      $form['photos'][$i] = [
+        '#type' => 'details',
+        '#title' => $i === 0
+          ? $this->t('Primary photograph')
+          : $this->t('Photograph @number', [
+            '@number' => $i + 1,
+          ]),
+        '#open' => $i === 0,
+      ];
+
+      $form['photos'][$i]['file'] = [
+        '#type' => 'managed_file',
+        '#title' => $this->t('Image'),
+        '#upload_location' => AuctionMediaManager::UPLOAD_LOCATION,
+        '#upload_validators' => AuctionMediaManager::getUploadValidators(),
+        '#multiple' => FALSE,
+        '#accept' => 'image/jpeg,image/png,image/webp',
+      ];
+
+      $form['photos'][$i]['alt'] = [
+        '#type' => 'textfield',
+        '#title' => $this->t('Alternative text'),
+        '#maxlength' => 255,
+        '#description' => $this->t(
+          'Describe what is visible in the photograph.'
+        ),
+      ];
+    }
+
     $form['starting_price'] = [
       '#type' => 'number',
       '#title' => $this->t('Starting price ($)'),
@@ -109,6 +150,7 @@ final class AuctionCreateForm extends FormBase {
     $form['actions']['submit'] = [
       '#type' => 'submit',
       '#value' => $this->t('Publish auction'),
+      '#marketplace_publish' => TRUE,
     ];
 
     return $form;
@@ -118,6 +160,64 @@ final class AuctionCreateForm extends FormBase {
     array &$form,
     FormStateInterface $form_state,
   ): void {
+
+    $trigger = $form_state->getTriggeringElement();
+
+    if (empty($trigger['#marketplace_publish'])) {
+      return;
+    }
+
+    $photos = [];
+    $seen = [];
+
+    $mediaManager = \Drupal::service(
+      'marketplace_auction.media_manager'
+    );
+
+    foreach ($form_state->getValue('photos', []) as $index => $photo) {
+      $fid = (int) ($photo['file'][0] ?? 0);
+      $alt = trim((string) ($photo['alt'] ?? ''));
+
+      if (!$fid) {
+        continue;
+      }
+
+      try {
+        if (isset($seen[$fid])) {
+          throw new \DomainException(
+            'Duplicate photographs are not allowed.'
+          );
+        }
+
+        $mediaManager->validatePhoto(
+          (int) $this->currentUser()->id(),
+          $fid,
+          $alt
+        );
+
+        $seen[$fid] = TRUE;
+
+        $photos[] = [
+          'fid' => $fid,
+          'alt' => $alt,
+        ];
+      }
+      catch (\DomainException $exception) {
+        $form_state->setErrorByName(
+          'photos][' . $index . '][alt',
+          $exception->getMessage()
+        );
+      }
+    }
+
+    if (empty($photos)) {
+      $form_state->setErrorByName(
+        'photos',
+        $this->t('Upload at least one valid photograph.')
+      );
+    }
+
+    $form_state->set('validated_photos', $photos);
 
     foreach (['starting_price', 'bid_increment'] as $field) {
       $value = (string) $form_state->getValue($field);
@@ -179,6 +279,7 @@ final class AuctionCreateForm extends FormBase {
           (int) $form_state->get('starting_price_cents'),
           (int) $form_state->get('bid_increment_cents'),
           (int) $form_state->getValue('duration'),
+          $form_state->get('validated_photos', []),
         );
     }
     catch (\DomainException $exception) {

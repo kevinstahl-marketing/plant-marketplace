@@ -19,3 +19,11 @@ services:
       - '@entity_type.manager'
       - '@marketplace_seller.manager'
       - '@datetime.time'
+      - '@marketplace_auction.media_manager'
+      - '@database'
+
+  marketplace_auction.media_manager:
+    class: Drupal\marketplace_auction\Service\AuctionMediaManager
+    arguments:
+      - '@entity_type.manager'
+      - '@file.validator'

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Drupal\marketplace_auction\Service;
 
 use Drupal\Component\Datetime\TimeInterface;
+use Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\marketplace_auction\Entity\Auction;
 use Drupal\marketplace_seller\Service\SellerManager;
@@ -18,6 +19,8 @@ final class AuctionManager {
     private readonly EntityTypeManagerInterface $entityTypeManager,
     private readonly SellerManager $sellerManager,
     private readonly TimeInterface $time,
+    private readonly AuctionMediaManager $mediaManager,
+    private readonly Connection $database,
   ) {}
 
   /**
@@ -32,6 +35,7 @@ final class AuctionManager {
     int $startingPrice,
     int $bidIncrement,
     int $durationHours,
+    array $photos,
   ): Auction {
 
     $seller = $this->sellerManager
@@ -70,35 +74,58 @@ final class AuctionManager {
 
     $now = $this->time->getCurrentTime();
 
-    $auction = $this->entityTypeManager
-      ->getStorage('marketplace_auction')
-      ->create([
-        'title' => $title,
-        'description' => [
-          'value' => $description,
-          'format' => 'plain_text',
-        ],
-        'seller_id' => $userId,
-        'seller_profile_id' => $seller->id(),
-        'status' => Auction::STATUS_OPEN,
-        'currency' => 'USD',
-        'starting_price' => $startingPrice,
-        'bid_increment' => $bidIncrement,
-        'current_price' => 0,
-        'bid_count' => 0,
-        'starts_at' => $now,
-        'ends_at' => $now + ($durationHours * 3600),
-      ]);
+    $transaction = $this->database->startTransaction();
 
-    $violations = $auction->validate();
-
-    if ($violations->count()) {
-      throw new \DomainException(
-        'Auction validation failed.'
+    try {
+      $images = $this->mediaManager->createImages(
+        $userId,
+        $photos
       );
-    }
 
-    $auction->save();
+      $auction = $this->entityTypeManager
+        ->getStorage('marketplace_auction')
+        ->create([
+          'title' => $title,
+          'images' => $images,
+          'description' => [
+            'value' => $description,
+            'format' => 'plain_text',
+          ],
+          'seller_id' => $userId,
+          'seller_profile_id' => $seller->id(),
+          'status' => Auction::STATUS_OPEN,
+          'currency' => 'USD',
+          'starting_price' => $startingPrice,
+          'bid_increment' => $bidIncrement,
+          'current_price' => 0,
+          'bid_count' => 0,
+          'starts_at' => $now,
+          'ends_at' => $now + ($durationHours * 3600),
+        ]);
+
+      $violations = $auction->validate();
+
+      if ($violations->count()) {
+        throw new \DomainException(
+          'Auction validation failed.'
+        );
+      }
+
+      $auction->save();
+
+      unset($transaction);
+    }
+    catch (\Throwable $exception) {
+      $transaction->rollBack();
+
+      foreach (['file', 'media', 'marketplace_auction'] as $type) {
+        $this->entityTypeManager
+          ->getStorage($type)
+          ->resetCache();
+      }
+
+      throw $exception;
+    }
 
     return $auction;
   }

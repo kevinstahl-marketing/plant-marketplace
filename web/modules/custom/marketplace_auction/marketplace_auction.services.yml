@@ -1,0 +1,7 @@
+services:
+  marketplace_auction.bid_manager:
+    class: Drupal\marketplace_auction\Service\BidManager
+    arguments:
+      - '@entity_type.manager'
+      - '@database'
+      - '@datetime.time'

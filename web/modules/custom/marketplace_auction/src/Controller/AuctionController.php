@@ -109,6 +109,51 @@ final class AuctionController extends ControllerBase {
       ];
     }
 
+    $history = \Drupal::service('marketplace_auction.bid_history')
+      ->getHistory((int) $auction->id(), (int) $account->id());
+
+    $leadingBidId = (int) $auction->get('leading_bid_id')->target_id;
+    $dateFormatter = \Drupal::service('date.formatter');
+
+    $rows = [];
+
+    foreach ($history as $entry) {
+      $bidder = $entry['bidder'];
+
+      if ($entry['is_own_bid']) {
+        $bidder .= ' (You)';
+      }
+
+      $rows[] = [
+        $bidder,
+        '$' . number_format($entry['amount'] / 100, 2),
+        $dateFormatter->format($entry['created'], 'medium'),
+        $entry['bid_id'] === $leadingBidId ? 'Leading' : '',
+      ];
+    }
+
+    $build['bid_history_heading'] = [
+      '#type' => 'html_tag',
+      '#tag' => 'h3',
+      '#value' => $this->t('Bid history'),
+    ];
+
+    $build['bid_history'] = [
+      '#type' => 'table',
+      '#header' => [
+        $this->t('Bidder'),
+        $this->t('Amount'),
+        $this->t('Placed at'),
+        $this->t('Status'),
+      ],
+      '#rows' => $rows,
+      '#empty' => $this->t('No bids have been placed yet.'),
+    ];
+
+    $build['bid_history_note'] = [
+      '#plain_text' => $this->t('Showing up to 50 recent bids.'),
+    ];
+
     return $build;
   }
 

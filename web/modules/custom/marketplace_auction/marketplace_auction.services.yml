@@ -27,3 +27,8 @@ services:
     arguments:
       - '@entity_type.manager'
       - '@file.validator'
+
+  marketplace_auction.bid_history:
+    class: Drupal\marketplace_auction\Service\BidHistory
+    arguments:
+      - '@database'

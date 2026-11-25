@@ -12,3 +12,10 @@ services:
       - '@entity_type.manager'
       - '@database'
       - '@datetime.time'
+
+  marketplace_auction.manager:
+    class: Drupal\marketplace_auction\Service\AuctionManager
+    arguments:
+      - '@entity_type.manager'
+      - '@marketplace_seller.manager'
+      - '@datetime.time'

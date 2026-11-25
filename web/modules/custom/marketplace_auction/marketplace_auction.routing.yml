@@ -10,3 +10,14 @@ marketplace_auction.detail:
       marketplace_auction:
         type: entity:marketplace_auction
     no_cache: TRUE
+
+marketplace_auction.create:
+  path: '/seller/auctions/create'
+  defaults:
+    _form: '\Drupal\marketplace_auction\Form\AuctionCreateForm'
+    _title: 'Create an auction'
+  requirements:
+    _permission: 'create marketplace auctions'
+    _user_is_logged_in: 'TRUE'
+  options:
+    no_cache: TRUE

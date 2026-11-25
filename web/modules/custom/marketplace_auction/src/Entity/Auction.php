@@ -131,8 +131,32 @@ class Auction extends ContentEntityBase {
       + (int) $this->get('bid_increment')->value;
   }
 
+  public function getSellerProfile(): ?\Drupal\marketplace_seller\Entity\Seller {
+    $seller = $this->get('seller_profile_id')->entity;
+
+    return $seller instanceof \Drupal\marketplace_seller\Entity\Seller
+      ? $seller
+      : NULL;
+  }
+
   public function getSellerId(): int {
-    return (int) $this->get('seller_id')->target_id;
+    return $this->getSellerProfile()?->getUserId()
+      ?? (int) $this->get('seller_id')->target_id;
+  }
+
+  public function hasEligibleSeller(): bool {
+    $seller = $this->getSellerProfile();
+
+    if (!$seller || !$seller->isActive()) {
+      return FALSE;
+    }
+
+    $account = $seller->get('user_id')->entity;
+
+    return $seller->getUserId() > 0
+      && $seller->getUserId() === (int) $this->get('seller_id')->target_id
+      && $account
+      && $account->isActive();
   }
 
 }

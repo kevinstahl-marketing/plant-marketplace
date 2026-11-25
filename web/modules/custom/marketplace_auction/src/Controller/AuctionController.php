@@ -25,7 +25,7 @@ final class AuctionController extends ControllerBase {
       throw new NotFoundHttpException();
     }
 
-    $open = $auction->isOpen($now);
+    $open = $auction->isOpen($now) && $auction->hasEligibleSeller();
     $count = (int) $auction->get('bid_count')->value;
 
     $price = $count > 0
@@ -41,7 +41,7 @@ final class AuctionController extends ControllerBase {
     $build['title'] = [
       '#type' => 'html_tag',
       '#tag' => 'h2',
-      '#value' => $auction->label(),
+      '#value' => \Drupal\Component\Utility\Html::escape($auction->label()),
     ];
 
     $build['description'] = [

@@ -91,6 +91,12 @@ final class BidManager {
         );
       }
 
+      if (!$auction->hasEligibleSeller()) {
+        throw new BidRejectedException(
+          'This auction is currently unavailable.'
+        );
+      }
+
       if ($auction->getSellerId() === $bidderId) {
         throw new BidRejectedException(
           'You cannot bid on your own auction.'

@@ -4,6 +4,7 @@ global:
     base:
       css/tokens.css: {}
       css/base.css: {}
+      css/controls.css: {}
     theme:
       css/global.css: {}
       css/product-information.css: {}

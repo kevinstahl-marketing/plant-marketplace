@@ -1,5 +1,24 @@
 
 :root {
+  /* Interactive controls */
+  --control-height: 2.75rem;
+  --control-radius: var(--radius-sm);
+  --control-padding-x: var(--space-4);
+  --control-padding-y: var(--space-3);
+  --control-background: var(--color-surface);
+  --control-border: var(--color-border);
+  --control-focus: var(--color-primary);
+  --control-text: var(--color-text);
+
+  /* Buttons */
+  --button-background: var(--color-primary);
+  --button-background-hover: var(--color-primary-dark);
+  --button-text: #ffffff;
+  --button-font-weight: 600;
+
+  /* Form feedback */
+  --color-error: #b42318;
+
   /* COLORS */
   --color-primary: #285943;
   --color-primary-dark: #193e2e;

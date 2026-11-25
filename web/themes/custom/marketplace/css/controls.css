@@ -1,0 +1,203 @@
+/* =========================================================
+   Marketplace — Shared UI controls
+   ========================================================= */
+
+/* Text-based controls */
+
+:where(
+  .ui-input,
+  .form-text,
+  .form-email,
+  .form-number,
+  .form-tel,
+  .form-url,
+  .form-password,
+  .form-date,
+  .form-time,
+  .form-search,
+  .form-textarea,
+  .form-select
+) {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: var(--control-height);
+  padding: var(--control-padding-y) var(--control-padding-x);
+
+  font: inherit;
+  font-size: var(--text-base);
+  color: var(--control-text);
+
+  background: var(--control-background);
+  border: 1px solid var(--control-border);
+  border-radius: var(--control-radius);
+
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+:where(.form-textarea, textarea.ui-input) {
+  min-height: 8rem;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+:where(.form-select) {
+  cursor: pointer;
+}
+
+:where(
+  .ui-input,
+  .form-text,
+  .form-email,
+  .form-number,
+  .form-tel,
+  .form-url,
+  .form-password,
+  .form-date,
+  .form-time,
+  .form-search,
+  .form-textarea,
+  .form-select
+):focus {
+  border-color: var(--control-focus);
+  outline: 2px solid var(--control-focus);
+  outline-offset: 2px;
+}
+
+:where(input, textarea)::placeholder {
+  color: var(--color-text-muted);
+  opacity: 1;
+}
+
+/* Buttons */
+
+:where(.ui-button, .form-submit, .button) {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+
+  min-height: var(--control-height);
+  padding: var(--control-padding-y) var(--control-padding-x);
+
+  font: inherit;
+  font-weight: var(--button-font-weight);
+  line-height: 1.25;
+  text-decoration: none;
+  text-align: center;
+
+  color: var(--button-text);
+  background: var(--button-background);
+  border: 1px solid transparent;
+  border-radius: var(--control-radius);
+
+  cursor: pointer;
+
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+:where(.ui-button, .form-submit, .button):hover {
+  color: var(--button-text);
+  background: var(--button-background-hover);
+  text-decoration: none;
+}
+
+:where(.ui-button, .form-submit, .button):focus-visible {
+  outline: 2px solid var(--control-focus);
+  outline-offset: 3px;
+}
+
+/* Secondary button variant */
+
+:where(.ui-button--secondary, .button--secondary) {
+  color: var(--color-primary);
+  background: transparent;
+  border-color: var(--color-primary);
+}
+
+:where(.ui-button--secondary, .button--secondary):hover {
+  color: var(--color-primary-dark);
+  background: var(--color-surface-muted);
+}
+
+/* Disabled controls */
+
+:where(
+  .ui-button,
+  .form-submit,
+  .button,
+  input,
+  select,
+  textarea
+):disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Checkbox and radio controls */
+
+:where(input[type="checkbox"], input[type="radio"]) {
+  accent-color: var(--color-primary);
+}
+
+/* Form structure */
+
+:where(.form-item) {
+  margin-block: var(--space-4);
+}
+
+:where(.form-item > label) {
+  display: block;
+  margin-bottom: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+:where(.form-type-checkbox, .form-type-radio) > label {
+  display: inline;
+  margin-bottom: 0;
+  font-weight: 400;
+}
+
+:where(.form-item .description) {
+  margin-top: var(--space-2);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+
+:where(.form-actions) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-block: var(--space-4);
+}
+
+/* Validation feedback */
+
+:where(input, select, textarea):is(
+  .error,
+  [aria-invalid="true"]
+) {
+  border-color: var(--color-error);
+}
+
+:where(.form-item--error-message) {
+  margin-top: var(--space-2);
+  color: var(--color-error);
+  font-size: var(--text-sm);
+}
+
+/* Reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+  :where(.ui-input, .ui-button, .form-submit, .button) {
+    transition: none;
+  }
+}

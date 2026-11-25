@@ -1,0 +1,12 @@
+marketplace_auction.detail:
+  path: '/auctions/{marketplace_auction}'
+  defaults:
+    _controller: '\Drupal\marketplace_auction\Controller\AuctionController::view'
+    _title: 'Auction'
+  requirements:
+    _permission: 'view marketplace auctions'
+  options:
+    parameters:
+      marketplace_auction:
+        type: entity:marketplace_auction
+    no_cache: TRUE

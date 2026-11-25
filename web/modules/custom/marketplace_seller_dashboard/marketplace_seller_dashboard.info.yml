@@ -1,0 +1,9 @@
+name: Marketplace Seller Dashboard
+type: module
+description: Provides the seller dashboard and business management interface.
+package: Marketplace
+core_version_requirement: ^11
+dependencies:
+  - marketplace_seller:marketplace_seller
+  - marketplace_auction:marketplace_auction
+  - drupal:views

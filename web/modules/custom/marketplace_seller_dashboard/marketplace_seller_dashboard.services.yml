@@ -1,0 +1,6 @@
+services:
+  marketplace_seller_dashboard.statistics:
+    class: Drupal\marketplace_seller_dashboard\Service\DashboardStatistics
+    arguments:
+      - '@database'
+      - '@datetime.time'

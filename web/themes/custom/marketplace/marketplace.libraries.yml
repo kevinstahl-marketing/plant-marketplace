@@ -14,3 +14,9 @@ global:
     - core/drupal
     - core/once
 
+seller-dashboard:
+  css:
+    theme:
+      css/seller-dashboard.css: {}
+  dependencies:
+    - marketplace/global

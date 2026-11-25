@@ -25,8 +25,11 @@ module:
   layout_builder: 0
   layout_discovery: 0
   link: 0
+  marketplace_auction: 0
   marketplace_cart: 0
   marketplace_catalog: 0
+  marketplace_seller: 0
+  marketplace_seller_dashboard: 0
   media: 0
   media_library: 0
   menu_link_content: 0

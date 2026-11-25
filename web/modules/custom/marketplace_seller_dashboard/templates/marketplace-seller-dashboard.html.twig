@@ -1,0 +1,55 @@
+{{ attach_library('marketplace/seller-dashboard') }}
+<div class="seller-dashboard">
+
+  <header class="seller-dashboard__header">
+    <div>
+      <h2>{{ seller_name }}</h2>
+
+      {% if seller_location %}
+        <p class="seller-dashboard__location">
+          {{ seller_location }}
+        </p>
+      {% endif %}
+    </div>
+
+    <div class="seller-dashboard__actions">
+      {{ create_link }}
+    </div>
+  </header>
+
+  <section class="seller-dashboard__statistics"
+           aria-label="{{ 'Auction statistics'|t }}">
+
+    {% set metrics = {
+      open: 'Active auctions'|t,
+      scheduled: 'Scheduled auctions'|t,
+      bids: 'Total bids'|t,
+      closed: 'Closed auctions'|t
+    } %}
+
+    {% for key, label in metrics %}
+      <div class="seller-dashboard__metric">
+        <span class="seller-dashboard__metric-label">
+          {{ label }}
+        </span>
+        <strong class="seller-dashboard__metric-value">
+          {{ statistics[key] }}
+        </strong>
+      </div>
+    {% endfor %}
+
+  </section>
+
+  {% if statistics.awaiting_closure %}
+    <p>
+      {{ 'Auctions awaiting closure:'|t }}
+      {{ statistics.awaiting_closure }}
+    </p>
+  {% endif %}
+
+  <section class="seller-dashboard__auctions"
+           aria-label="{{ 'Your auctions'|t }}">
+    {{ auctions }}
+  </section>
+
+</div>

@@ -1,0 +1,10 @@
+marketplace_seller_dashboard.overview:
+  path: '/seller/dashboard'
+  defaults:
+    _controller: '\Drupal\marketplace_seller_dashboard\Controller\DashboardController::overview'
+    _title: 'Seller dashboard'
+  requirements:
+    _permission: 'create marketplace auctions'
+    _custom_access: '\Drupal\marketplace_seller_dashboard\Controller\DashboardController::access'
+  options:
+    no_cache: TRUE

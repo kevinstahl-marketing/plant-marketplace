@@ -1,0 +1,11 @@
+name: Marketplace Order
+type: module
+description: Integrates marketplace auction settlements with Drupal Commerce orders.
+package: Marketplace
+core_version_requirement: ^11
+dependencies:
+  - commerce:commerce_order
+  - commerce:commerce_product
+  - commerce_shipping:commerce_shipping
+  - marketplace_auction:marketplace_auction
+  - marketplace_seller:marketplace_seller

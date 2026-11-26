@@ -154,6 +154,33 @@ class Auction extends ContentEntityBase {
       ->setSetting('min', 0)
       ->setDefaultValue(0);
 
+
+    // Shipping specifications use integer metric units.
+    $fields['package_weight_g'] = BaseFieldDefinition::create('integer')
+      ->setLabel(t('Package weight (grams)'))
+      ->setSetting('min', 1)
+      ->setSetting('max', 50000);
+
+    $fields['package_length_mm'] = BaseFieldDefinition::create('integer')
+      ->setLabel(t('Package length (millimeters)'))
+      ->setSetting('min', 1)
+      ->setSetting('max', 3000);
+
+    $fields['package_width_mm'] = BaseFieldDefinition::create('integer')
+      ->setLabel(t('Package width (millimeters)'))
+      ->setSetting('min', 1)
+      ->setSetting('max', 3000);
+
+    $fields['package_height_mm'] = BaseFieldDefinition::create('integer')
+      ->setLabel(t('Package height (millimeters)'))
+      ->setSetting('min', 1)
+      ->setSetting('max', 3000);
+
+    $fields['handling_days'] = BaseFieldDefinition::create('integer')
+      ->setLabel(t('Handling time (business days)'))
+      ->setSetting('min', 1)
+      ->setSetting('max', 30);
+
     $fields['created'] = BaseFieldDefinition::create('created')
       ->setLabel(t('Created'));
 

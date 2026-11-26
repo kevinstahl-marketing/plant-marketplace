@@ -8,6 +8,7 @@ use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\marketplace_auction\Entity\Auction;
+use Drupal\marketplace_auction\ValueObject\ShippingSpecification;
 use Drupal\marketplace_seller\Service\SellerManager;
 
 /**
@@ -36,6 +37,7 @@ final class AuctionManager {
     int $bidIncrement,
     int $durationHours,
     array $photos,
+    ShippingSpecification $shipping,
   ): Auction {
 
     $seller = $this->sellerManager
@@ -124,6 +126,7 @@ final class AuctionManager {
           'soft_close_window' => $softCloseWindow,
           'soft_close_extension' => $softCloseExtension,
           'extension_count' => 0,
+          ...$shipping->toFieldValues(),
         ]);
 
       $violations = $auction->validate();

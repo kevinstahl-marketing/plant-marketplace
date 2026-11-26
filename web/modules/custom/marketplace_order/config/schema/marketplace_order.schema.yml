@@ -1,0 +1,7 @@
+marketplace_order.settings:
+  type: config_object
+  label: 'Marketplace order settings'
+  mapping:
+    store_uuid:
+      type: string
+      label: 'Commerce store UUID'

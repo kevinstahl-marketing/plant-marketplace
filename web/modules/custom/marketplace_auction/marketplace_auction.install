@@ -284,3 +284,35 @@ function marketplace_auction_update_11007(): string {
 
   return 'Auction settlement storage installed.';
 }
+
+
+/**
+ * Installs auction shipping specification fields.
+ */
+function marketplace_auction_update_11008(): string {
+  $manager = \Drupal::entityDefinitionUpdateManager();
+
+  $definitions = \Drupal::service('entity_field.manager')
+    ->getFieldStorageDefinitions('marketplace_auction');
+
+  $fields = [
+    'package_weight_g',
+    'package_length_mm',
+    'package_width_mm',
+    'package_height_mm',
+    'handling_days',
+  ];
+
+  foreach ($fields as $name) {
+    if (!$manager->getFieldStorageDefinition($name, 'marketplace_auction')) {
+      $manager->installFieldStorageDefinition(
+        $name,
+        'marketplace_auction',
+        'marketplace_auction',
+        $definitions[$name],
+      );
+    }
+  }
+
+  return 'Installed auction shipping specification fields.';
+}

@@ -17,6 +17,9 @@
     "require": {
         "composer/installers": "^2.3",
         "drupal/canvas": "^1.12",
+        "drupal/commerce": "^3.3",
+        "drupal/commerce_shipping": "^3.0",
+        "drupal/commerce_stripe": "^2.2",
         "drupal/core-composer-scaffold": "^11.4",
         "drupal/core-project-message": "^11.4",
         "drupal/core-recipe-unpack": "^11.4",

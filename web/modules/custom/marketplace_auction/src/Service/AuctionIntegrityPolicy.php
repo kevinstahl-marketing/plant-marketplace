@@ -25,6 +25,12 @@ final class AuctionIntegrityPolicy {
     'original_ends_at',
     'soft_close_window',
     'soft_close_extension',
+    'package_weight_g',
+    'package_length_mm',
+    'package_width_mm',
+    'package_height_mm',
+    'handling_days',
+
   ];
 
   /**

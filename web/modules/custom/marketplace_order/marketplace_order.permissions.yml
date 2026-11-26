@@ -1,0 +1,9 @@
+administer marketplace orders:
+  title: 'Administer marketplace orders'
+  restrict access: true
+
+view own marketplace orders:
+  title: 'View own marketplace orders'
+
+view own marketplace sales:
+  title: 'View own marketplace sales'

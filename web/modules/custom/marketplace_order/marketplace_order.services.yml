@@ -1,0 +1,13 @@
+services:
+  marketplace_order.auction_order_manager:
+    class: Drupal\marketplace_order\Service\AuctionOrderManager
+    arguments:
+      - '@entity_type.manager'
+      - '@database'
+      - '@config.factory'
+      - '@datetime.time'
+
+  marketplace_order.checkout_route_subscriber:
+    class: Drupal\marketplace_order\Routing\CheckoutRouteSubscriber
+    tags:
+      - { name: event_subscriber }

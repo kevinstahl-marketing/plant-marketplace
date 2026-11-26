@@ -6,6 +6,7 @@ namespace Drupal\marketplace_auction\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\marketplace_auction\Service\AuctionMediaManager;
+use Drupal\marketplace_auction\ValueObject\ShippingSpecification;
 use Drupal\Core\Form\FormStateInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
@@ -136,6 +137,50 @@ final class AuctionCreateForm extends FormBase {
       '#required' => TRUE,
     ];
 
+
+    $form['shipping'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Shipping information'),
+      '#description' => $this->t(
+        'Enter the estimated weight and dimensions of the packed shipment.'
+      ),
+      '#open' => TRUE,
+      '#tree' => TRUE,
+    ];
+
+    $measurements = [
+      'pounds' => ['Pounds', 0, 110, 1],
+      'ounces' => ['Ounces', 0, 15.99, 0.01],
+      'length' => ['Package length (inches)', 0.1, 118, 0.1],
+      'width' => ['Package width (inches)', 0.1, 118, 0.1],
+      'height' => ['Package height (inches)', 0.1, 118, 0.1],
+    ];
+
+    foreach ($measurements as $key => [$label, $min, $max, $step]) {
+      $form['shipping'][$key] = [
+        '#type' => 'number',
+        '#title' => $this->t($label),
+        '#required' => TRUE,
+        '#min' => $min,
+        '#max' => $max,
+        '#step' => $step,
+      ];
+
+      if (in_array($key, ['pounds', 'ounces'], TRUE)) {
+        $form['shipping'][$key]['#default_value'] = 0;
+      }
+    }
+
+    $form['shipping']['handling_days'] = [
+      '#type' => 'number',
+      '#title' => $this->t('Handling time (business days)'),
+      '#required' => TRUE,
+      '#min' => 1,
+      '#max' => 30,
+      '#step' => 1,
+      '#default_value' => 2,
+    ];
+
     $form['notice'] = [
       '#type' => 'item',
       '#plain_text' => $this->t(
@@ -165,6 +210,50 @@ final class AuctionCreateForm extends FormBase {
 
     if (empty($trigger['#marketplace_publish'])) {
       return;
+    }
+
+
+    $shipping = $form_state->getValue('shipping', []);
+
+    try {
+      foreach ([
+        'pounds', 'ounces', 'length',
+        'width', 'height', 'handling_days',
+      ] as $key) {
+        if (!isset($shipping[$key]) || !is_numeric($shipping[$key])) {
+          throw new \DomainException('Enter all package measurements.');
+        }
+      }
+
+      if ((float) $shipping['handling_days'] !==
+        (float) (int) $shipping['handling_days']) {
+        throw new \DomainException('Handling time must be a whole number.');
+      }
+
+      if ((float) $shipping['pounds'] !==
+        (float) (int) $shipping['pounds']) {
+        throw new \DomainException('Enter whole pounds and remaining ounces.');
+      }
+
+      $specification = ShippingSpecification::fromImperial(
+        (float) $shipping['pounds'],
+        (float) $shipping['ounces'],
+        (float) $shipping['length'],
+        (float) $shipping['width'],
+        (float) $shipping['height'],
+        (int) $shipping['handling_days'],
+      );
+
+      $form_state->set(
+        'validated_shipping',
+        $specification->toFieldValues(),
+      );
+    }
+    catch (\DomainException $exception) {
+      $form_state->setErrorByName(
+        'shipping',
+        $exception->getMessage(),
+      );
     }
 
     $photos = [];
@@ -271,6 +360,16 @@ final class AuctionCreateForm extends FormBase {
   ): void {
 
     try {
+      $shipping = $form_state->get('validated_shipping');
+
+      $specification = new ShippingSpecification(
+        $shipping['package_weight_g'],
+        $shipping['package_length_mm'],
+        $shipping['package_width_mm'],
+        $shipping['package_height_mm'],
+        $shipping['handling_days'],
+      );
+
       $auction = \Drupal::service('marketplace_auction.manager')
         ->createAuction(
           (int) $this->currentUser()->id(),
@@ -280,6 +379,7 @@ final class AuctionCreateForm extends FormBase {
           (int) $form_state->get('bid_increment_cents'),
           (int) $form_state->getValue('duration'),
           $form_state->get('validated_photos', []),
+          $specification,
         );
     }
     catch (\DomainException $exception) {

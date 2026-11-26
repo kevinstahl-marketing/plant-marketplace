@@ -1,0 +1,61 @@
+<?php
+
+/**
+ * @file
+ * Installation and schema definitions for Marketplace Order.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function marketplace_order_schema(): array {
+  $schema['marketplace_order_settlement'] = [
+    'description' => 'Maps auction settlements to Commerce orders.',
+    'fields' => [
+      'settlement_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+      'order_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+      'order_item_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+      'created' => [
+        'type' => 'int',
+        'not null' => TRUE,
+      ],
+    ],
+    'primary key' => ['settlement_id'],
+    'unique keys' => [
+      'unique_order' => ['order_id'],
+      'unique_order_item' => ['order_item_id'],
+    ],
+  ];
+
+  return $schema;
+}
+
+/**
+ * Installs the settlement-to-order mapping table.
+ */
+function marketplace_order_update_11001(): string {
+  $database = \Drupal::database()->schema();
+
+  if (!$database->tableExists('marketplace_order_settlement')) {
+    $schema = marketplace_order_schema();
+
+    $database->createTable(
+      'marketplace_order_settlement',
+      $schema['marketplace_order_settlement'],
+    );
+  }
+
+  return 'Installed settlement-to-order mapping table.';
+}

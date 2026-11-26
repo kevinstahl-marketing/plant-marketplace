@@ -47,6 +47,11 @@ final class BidManagerTest extends KernelTestBase {
     $this->installSchema('user', ['users_data']);
     $this->installSchema('file', ['file_usage']);
 
+    $this->installSchema(
+      'marketplace_auction',
+      ['marketplace_proxy_bid'],
+    );
+
     foreach ([
       'user',
       'file',
@@ -199,5 +204,163 @@ final class BidManagerTest extends KernelTestBase {
       $this->assertSame(1, (int) $count);
     }
   }
+
+
+  private function enableProxyBidding(): void {
+    $this->auction->set('bidding_mode', Auction::MODE_PROXY);
+    $this->auction->save();
+  }
+
+  public function testProxyCompetition(): void {
+    $this->enableProxyBidding();
+
+    $this->placeBid($this->bidderA, 10000);
+
+    $auction = $this->reloadAuction();
+
+    $this->assertSame(
+      2500,
+      (int) $auction->get('current_price')->value,
+    );
+
+    $this->placeBid($this->bidderB, 6000);
+
+    $auction = $this->reloadAuction();
+
+    $this->assertSame(
+      6100,
+      (int) $auction->get('current_price')->value,
+    );
+
+    $this->assertSame(
+      (int) $this->bidderA->id(),
+      (int) $auction->get('leading_bid_id')->entity
+        ->get('bidder_id')->target_id,
+    );
+
+    $this->placeBid($this->bidderB, 15000);
+
+    $auction = $this->reloadAuction();
+
+    $this->assertSame(
+      10100,
+      (int) $auction->get('current_price')->value,
+    );
+
+    $this->assertSame(
+      (int) $this->bidderB->id(),
+      (int) $auction->get('leading_bid_id')->entity
+        ->get('bidder_id')->target_id,
+    );
+
+    $this->assertSame(
+      3,
+      (int) $auction->get('bid_count')->value,
+    );
+  }
+
+  public function testPrivateMaximumIncrease(): void {
+    $this->enableProxyBidding();
+
+    $this->placeBid($this->bidderA, 10000);
+    $this->placeBid($this->bidderB, 6000);
+
+    $before = $this->reloadAuction();
+    $leadingId = (int) $before->get('leading_bid_id')->target_id;
+
+    $this->placeBid($this->bidderA, 15000);
+
+    $auction = $this->reloadAuction();
+
+    $this->assertSame(
+      6100,
+      (int) $auction->get('current_price')->value,
+    );
+
+    $this->assertSame(
+      2,
+      (int) $auction->get('bid_count')->value,
+    );
+
+    $this->assertSame(
+      $leadingId,
+      (int) $auction->get('leading_bid_id')->target_id,
+    );
+
+    $repository = \Drupal::service(
+      'marketplace_auction.proxy_bid_repository'
+    );
+
+    $offer = $repository->getOffer(
+      (int) $auction->id(),
+      (int) $this->bidderA->id(),
+    );
+
+    $this->assertSame(15000, $offer['maximum']);
+  }
+
+  public function testProxyTie(): void {
+    $this->enableProxyBidding();
+
+    $this->placeBid($this->bidderA, 10000);
+    $this->placeBid($this->bidderB, 10000);
+
+    $auction = $this->reloadAuction();
+
+    $this->assertSame(
+      10000,
+      (int) $auction->get('current_price')->value,
+    );
+
+    $this->assertSame(
+      (int) $this->bidderA->id(),
+      (int) $auction->get('leading_bid_id')->entity
+        ->get('bidder_id')->target_id,
+    );
+  }
+
+  public function testProxyMaximumCannotDecrease(): void {
+    $this->enableProxyBidding();
+
+    $this->placeBid($this->bidderA, 10000);
+
+    $this->expectException(BidRejectedException::class);
+
+    $this->placeBid($this->bidderA, 9000);
+  }
+
+  public function testRejectedProxyBidPreservesStorage(): void {
+    $this->enableProxyBidding();
+
+    $this->placeBid($this->bidderA, 10000);
+
+    try {
+      $this->placeBid($this->bidderB, 2550);
+      $this->fail('Invalid proxy bid was accepted.');
+    }
+    catch (BidRejectedException) {
+      $repository = \Drupal::service(
+        'marketplace_auction.proxy_bid_repository'
+      );
+
+      $this->assertCount(
+        1,
+        $repository->getOffers((int) $this->auction->id()),
+      );
+
+      $auction = $this->reloadAuction();
+
+      $this->assertSame(
+        2500,
+        (int) $auction->get('current_price')->value,
+      );
+
+      $this->assertSame(
+        1,
+        (int) $auction->get('bid_count')->value,
+      );
+    }
+  }
+
 
 }

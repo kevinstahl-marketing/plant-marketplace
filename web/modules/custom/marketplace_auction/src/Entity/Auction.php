@@ -27,6 +27,9 @@ use Drupal\Core\StringTranslation\TranslatableMarkup;
 )]
 class Auction extends ContentEntityBase {
 
+  public const MODE_DIRECT = 'direct';
+  public const MODE_PROXY = 'proxy';
+
   public const STATUS_DRAFT = 'draft';
   public const STATUS_SCHEDULED = 'scheduled';
   public const STATUS_OPEN = 'open';
@@ -79,6 +82,15 @@ class Auction extends ContentEntityBase {
       ->setDefaultValue(self::STATUS_DRAFT)
       ->setRequired(TRUE);
 
+    $fields['bidding_mode'] = BaseFieldDefinition::create('list_string')
+      ->setLabel(t('Bidding mode'))
+      ->setSetting('allowed_values', [
+        self::MODE_DIRECT => 'Direct bidding',
+        self::MODE_PROXY => 'Automatic proxy bidding',
+      ])
+      ->setDefaultValue(self::MODE_DIRECT)
+      ->setRequired(TRUE);
+
     $fields['currency'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Currency'))
       ->setSetting('max_length', 3)
@@ -126,6 +138,13 @@ class Auction extends ContentEntityBase {
       ->setLabel(t('Changed'));
 
     return $fields;
+  }
+
+  /**
+   * Determines whether automatic proxy bidding is enabled.
+   */
+  public function usesProxyBidding(): bool {
+    return $this->get('bidding_mode')->value === self::MODE_PROXY;
   }
 
   public function isOpen(int $now): bool {

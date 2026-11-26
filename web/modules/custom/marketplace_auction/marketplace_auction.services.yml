@@ -5,6 +5,8 @@ services:
       - '@entity_type.manager'
       - '@database'
       - '@datetime.time'
+      - '@marketplace_auction.proxy_bid_repository'
+      - '@marketplace_auction.proxy_bid_resolver'
 
   marketplace_auction.lifecycle:
     class: Drupal\marketplace_auction\Service\AuctionLifecycle

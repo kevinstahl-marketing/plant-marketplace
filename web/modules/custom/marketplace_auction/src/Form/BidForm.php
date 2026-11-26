@@ -27,26 +27,83 @@ final class BidForm extends FormBase {
 
     $form_state->set('auction_id', (int) $auction->id());
 
+    $isProxy = $auction->usesProxyBidding();
+    $minimumCents = $auction->getMinimumBid();
+    $existing = NULL;
+
+    if ($isProxy) {
+      $existing = \Drupal::service(
+        'marketplace_auction.proxy_bid_repository'
+      )->getOffer(
+        (int) $auction->id(),
+        (int) $this->currentUser()->id(),
+      );
+
+      $leadingBid = $auction->get('leading_bid_id')->entity;
+
+      $isLeader = $leadingBid
+        && (int) $leadingBid->get('bidder_id')->target_id
+          === (int) $this->currentUser()->id();
+
+      if ($existing !== NULL) {
+        $minimumCents = $isLeader
+          ? $existing['maximum'] + 1
+          : max($minimumCents, $existing['maximum'] + 1);
+
+        $form['existing_maximum'] = [
+          '#type' => 'item',
+          '#title' => $this->t('Your private maximum'),
+          '#plain_text' => '$' . number_format(
+            $existing['maximum'] / 100,
+            2,
+          ),
+        ];
+      }
+
+      $form['proxy_explanation'] = [
+        '#type' => 'item',
+        '#plain_text' => $this->t(
+          'Enter the most you are willing to pay. We will automatically bid on your behalf. Your maximum remains private.'
+        ),
+      ];
+    }
+
+    if ($minimumCents > 2147483647) {
+      $form['limit_reached'] = [
+        '#type' => 'item',
+        '#plain_text' => $this->t(
+          'No higher bid can be submitted.'
+        ),
+      ];
+
+      $form['#cache']['max-age'] = 0;
+      return $form;
+    }
+
     $minimum = number_format(
-      $auction->getMinimumBid() / 100,
+      $minimumCents / 100,
       2,
       '.',
-      ''
+      '',
     );
 
     $form['amount'] = [
       '#type' => 'number',
-      '#title' => $this->t('Your bid (USD)'),
+      '#title' => $isProxy
+        ? $this->t('Your maximum bid (USD)')
+        : $this->t('Your bid (USD)'),
       '#min' => $minimum,
       '#max' => '21474836.47',
       '#step' => '0.01',
       '#default_value' => $minimum,
       '#required' => TRUE,
       '#description' => $this->t(
-        'Minimum acceptable bid: $@amount',
-        ['@amount' => $minimum]
+        'Minimum acceptable amount: $@amount',
+        ['@amount' => $minimum],
       ),
     ];
+
+    $form_state->set('is_proxy', $isProxy);
 
     $form['actions'] = [
       '#type' => 'actions',
@@ -54,7 +111,9 @@ final class BidForm extends FormBase {
 
     $form['actions']['submit'] = [
       '#type' => 'submit',
-      '#value' => $this->t('Place bid'),
+      '#value' => $isProxy
+        ? $this->t('Submit maximum bid')
+        : $this->t('Place bid'),
       '#button_type' => 'primary',
     ];
 
@@ -108,9 +167,13 @@ final class BidForm extends FormBase {
         ->placeBid($auctionId, $bidderId, $amount);
 
       $this->messenger()->addStatus(
-        $this->t('Your bid of $@amount was accepted.', [
-          '@amount' => number_format($amount / 100, 2),
-        ])
+        $form_state->get('is_proxy')
+          ? $this->t('Your private maximum of $@amount was accepted.', [
+            '@amount' => number_format($amount / 100, 2),
+          ])
+          : $this->t('Your bid of $@amount was accepted.', [
+            '@amount' => number_format($amount / 100, 2),
+          ])
       );
     }
     catch (BidRejectedException $exception) {

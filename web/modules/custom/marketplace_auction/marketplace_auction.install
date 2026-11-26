@@ -160,3 +160,37 @@ function marketplace_auction_update_11003(): string {
 
   return 'Private proxy bidding storage installed.';
 }
+
+/**
+ * Adds bidding modes while preserving existing direct auctions.
+ */
+function marketplace_auction_update_11004(): string {
+  $manager = \Drupal::entityDefinitionUpdateManager();
+
+  if (!$manager->getFieldStorageDefinition(
+    'bidding_mode',
+    'marketplace_auction'
+  )) {
+    $definition = \Drupal::service('entity_field.manager')
+      ->getFieldStorageDefinitions('marketplace_auction')['bidding_mode'];
+
+    $manager->installFieldStorageDefinition(
+      'bidding_mode',
+      'marketplace_auction',
+      'marketplace_auction',
+      $definition,
+    );
+  }
+
+  $updated = \Drupal::database()
+    ->update('marketplace_auction')
+    ->fields(['bidding_mode' => 'direct'])
+    ->isNull('bidding_mode')
+    ->execute();
+
+  \Drupal::entityTypeManager()
+    ->getStorage('marketplace_auction')
+    ->resetCache();
+
+  return "Bidding modes installed; $updated existing auctions initialized.";
+}

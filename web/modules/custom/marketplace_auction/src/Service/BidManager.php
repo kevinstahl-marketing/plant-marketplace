@@ -20,6 +20,8 @@ final class BidManager {
     private readonly EntityTypeManagerInterface $entityTypeManager,
     private readonly Connection $database,
     private readonly TimeInterface $time,
+    private readonly ProxyBidRepository $proxyRepository,
+    private readonly ProxyBidResolver $proxyResolver,
   ) {}
 
   /**
@@ -103,18 +105,46 @@ final class BidManager {
         );
       }
 
-      $minimum = $auction->getMinimumBid();
+      $publicBidderId = $bidderId;
+      $publicAmount = $amount;
 
-      if ($amount < $minimum) {
-        throw new BidRejectedException(
-          'Minimum bid is $' . number_format($minimum / 100, 2)
+      if ($auction->usesProxyBidding()) {
+        $result = $this->resolveProxyBid(
+          $auction,
+          $bidderId,
+          $amount,
+          $now,
         );
+
+        $publicBidderId = $result['bidder_id'];
+        $publicAmount = $result['price'];
+
+        $leadingBid = $auction->get('leading_bid_id')->entity;
+
+        // A private maximum increase need not create a public bid.
+        if (
+          $leadingBid instanceof Bid
+          && (int) $leadingBid->get('bidder_id')->target_id === $publicBidderId
+          && (int) $auction->get('current_price')->value === $publicAmount
+        ) {
+          unset($transaction);
+          return $leadingBid;
+        }
+      }
+      else {
+        $minimum = $auction->getMinimumBid();
+
+        if ($amount < $minimum) {
+          throw new BidRejectedException(
+            'Minimum bid is $' . number_format($minimum / 100, 2)
+          );
+        }
       }
 
       $bid = $bidStorage->create([
         'auction_id' => $auctionId,
-        'bidder_id' => $bidderId,
-        'amount' => $amount,
+        'bidder_id' => $publicBidderId,
+        'amount' => $publicAmount,
         'created' => $now,
       ]);
 
@@ -126,7 +156,7 @@ final class BidManager {
 
       $bid->save();
 
-      $auction->set('current_price', $amount);
+      $auction->set('current_price', $publicAmount);
       $auction->set(
         'bid_count',
         (int) $auction->get('bid_count')->value + 1
@@ -151,5 +181,73 @@ final class BidManager {
 
     return $bid;
   }
+
+
+  /**
+   * Resolves a private maximum into public competitive state.
+   *
+   * Must run inside the locked auction transaction.
+   */
+  private function resolveProxyBid(
+    Auction $auction,
+    int $bidderId,
+    int $maximum,
+    int $now,
+  ): array {
+    $auctionId = (int) $auction->id();
+
+    $existing = $this->proxyRepository
+      ->getOffer($auctionId, $bidderId);
+
+    $leadingBid = $auction->get('leading_bid_id')->entity;
+
+    $isLeader = $leadingBid instanceof Bid
+      && (int) $leadingBid->get('bidder_id')->target_id === $bidderId;
+
+    if ($existing !== NULL && $maximum <= $existing['maximum']) {
+      throw new BidRejectedException(
+        'Your new maximum must exceed your previous maximum.'
+      );
+    }
+
+    $minimum = $isLeader && $existing !== NULL
+      ? $existing['maximum'] + 1
+      : $auction->getMinimumBid();
+
+    if ($maximum < $minimum) {
+      throw new BidRejectedException(
+        'Minimum acceptable maximum is $'
+        . number_format($minimum / 100, 2)
+      );
+    }
+
+    $this->proxyRepository->saveMaximum(
+      $auctionId,
+      $bidderId,
+      $maximum,
+      $now,
+    );
+
+    $result = $this->proxyResolver->resolve(
+      (int) $auction->get('starting_price')->value,
+      (int) $auction->get('bid_increment')->value,
+      $this->proxyRepository->getOffers($auctionId),
+    );
+
+    if ($result === NULL) {
+      throw new \LogicException(
+        'Proxy bidding failed to resolve a stored maximum.'
+      );
+    }
+
+    if ($result['price'] < (int) $auction->get('current_price')->value) {
+      throw new \LogicException(
+        'Proxy bidding cannot reduce the public auction price.'
+      );
+    }
+
+    return $result;
+  }
+
 
 }

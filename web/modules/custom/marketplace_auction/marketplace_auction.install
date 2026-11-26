@@ -93,3 +93,70 @@ function marketplace_auction_update_11002(): string {
 
   return 'Auction image references installed.';
 }
+
+/**
+ * Implements hook_schema().
+ */
+function marketplace_auction_schema(): array {
+  $schema['marketplace_proxy_bid'] = [
+    'description' => 'Private maximum offers for auction proxy bidding.',
+    'fields' => [
+      'auction_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+      'bidder_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+      'maximum' => [
+        'type' => 'int',
+        'not null' => TRUE,
+      ],
+      'sequence' => [
+        'type' => 'int',
+        'size' => 'big',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+      'created' => [
+        'type' => 'int',
+        'not null' => TRUE,
+      ],
+      'changed' => [
+        'type' => 'int',
+        'not null' => TRUE,
+      ],
+    ],
+    'primary key' => ['auction_id', 'bidder_id'],
+    'unique keys' => [
+      'auction_sequence' => ['auction_id', 'sequence'],
+    ],
+    'indexes' => [
+      'bidder' => ['bidder_id'],
+      'auction_maximum' => ['auction_id', 'maximum'],
+    ],
+  ];
+
+  return $schema;
+}
+
+/**
+ * Installs private proxy bidding storage.
+ */
+function marketplace_auction_update_11003(): string {
+  $database = \Drupal::database();
+  $schema = $database->schema();
+
+  if (!$schema->tableExists('marketplace_proxy_bid')) {
+    $definition = marketplace_auction_schema();
+    $schema->createTable(
+      'marketplace_proxy_bid',
+      $definition['marketplace_proxy_bid'],
+    );
+  }
+
+  return 'Private proxy bidding storage installed.';
+}

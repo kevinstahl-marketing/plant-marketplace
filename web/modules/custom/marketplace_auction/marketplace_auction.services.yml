@@ -32,3 +32,11 @@ services:
     class: Drupal\marketplace_auction\Service\BidHistory
     arguments:
       - '@database'
+
+  marketplace_auction.proxy_bid_repository:
+    class: Drupal\marketplace_auction\Service\ProxyBidRepository
+    arguments:
+      - '@database'
+
+  marketplace_auction.proxy_bid_resolver:
+    class: Drupal\marketplace_auction\Service\ProxyBidResolver

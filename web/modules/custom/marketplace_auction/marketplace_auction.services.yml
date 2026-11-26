@@ -15,6 +15,7 @@ services:
       - '@entity_type.manager'
       - '@database'
       - '@datetime.time'
+      - '@marketplace_auction.settlement_manager'
 
   marketplace_auction.manager:
     class: Drupal\marketplace_auction\Service\AuctionManager
@@ -46,3 +47,8 @@ services:
 
   marketplace_auction.soft_close_policy:
     class: Drupal\marketplace_auction\Service\SoftClosePolicy
+
+  marketplace_auction.settlement_manager:
+    class: Drupal\marketplace_auction\Service\AuctionSettlementManager
+    arguments:
+      - '@entity_type.manager'

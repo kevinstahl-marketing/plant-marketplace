@@ -268,3 +268,19 @@ function marketplace_auction_update_11006(): string {
 
   return 'Default soft close configuration established.';
 }
+
+/**
+ * Installs auction settlement entity storage.
+ */
+function marketplace_auction_update_11007(): string {
+  $manager = \Drupal::entityDefinitionUpdateManager();
+
+  if (!$manager->getEntityType('marketplace_auction_settlement')) {
+    $definition = \Drupal::entityTypeManager()
+      ->getDefinition('marketplace_auction_settlement');
+
+    $manager->installEntityType($definition);
+  }
+
+  return 'Auction settlement storage installed.';
+}

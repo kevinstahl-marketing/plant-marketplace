@@ -18,6 +18,7 @@ final class AuctionLifecycle {
     private readonly EntityTypeManagerInterface $entityTypeManager,
     private readonly Connection $database,
     private readonly TimeInterface $time,
+    private readonly AuctionSettlementManager $settlementManager,
   ) {}
 
   /**
@@ -112,6 +113,9 @@ final class AuctionLifecycle {
         Auction::STATUS_SCHEDULED,
       ], TRUE) && $now >= $ends) {
 
+        // Record the final outcome within the same locked transaction.
+        $this->settlementManager->settle($auction, $now);
+
         $auction->set('status', Auction::STATUS_CLOSED);
         $auction->save();
 
@@ -138,6 +142,10 @@ final class AuctionLifecycle {
       }
 
       $storage->resetCache([$auctionId]);
+
+      $this->entityTypeManager
+        ->getStorage('marketplace_auction_settlement')
+        ->resetCache();
 
       throw $exception;
     }

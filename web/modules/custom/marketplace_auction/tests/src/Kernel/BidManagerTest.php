@@ -82,6 +82,7 @@ final class BidManagerTest extends KernelTestBase {
       'marketplace_seller',
       'marketplace_auction',
       'marketplace_bid',
+      'marketplace_auction_settlement',
     ] as $entityType) {
       $this->installEntitySchema($entityType);
     }
@@ -641,6 +642,200 @@ final class BidManagerTest extends KernelTestBase {
       3000,
       (int) $auction->get('starting_price')->value,
     );
+  }
+
+
+  /**
+   * Processes the current test auction.
+   */
+  private function processLifecycle(): string {
+    return \Drupal::service('marketplace_auction.lifecycle')
+      ->processAuction((int) $this->auction->id());
+  }
+
+  /**
+   * Retrieves the current auction's settlement.
+   */
+  private function getSettlement(): ?\Drupal\marketplace_auction\Entity\AuctionSettlement {
+    return \Drupal::service('marketplace_auction.settlement_manager')
+      ->getSettlement((int) $this->auction->id());
+  }
+
+  public function testSoldAuctionSettlement(): void {
+    $this->configureSoftClose(600);
+
+    $this->placeBid($this->bidderA, 2500);
+    $this->placeBid($this->bidderB, 3000);
+
+    $this->clockTime += 600;
+
+    $this->assertSame('closed', $this->processLifecycle());
+
+    $settlement = $this->getSettlement();
+
+    $this->assertNotNull($settlement);
+    $this->assertTrue($settlement->isSold());
+
+    $this->assertSame(
+      (int) $this->bidderB->id(),
+      (int) $settlement->get('winner_id')->target_id,
+    );
+
+    $this->assertSame(
+      3000,
+      (int) $settlement->get('final_price')->value,
+    );
+
+    $auction = $this->reloadAuction();
+
+    $this->assertSame(
+      Auction::STATUS_CLOSED,
+      $auction->get('status')->value,
+    );
+
+    $this->assertSame(
+      (int) $auction->get('leading_bid_id')->target_id,
+      (int) $settlement->get('winning_bid_id')->target_id,
+    );
+  }
+
+  public function testUnsoldAuctionSettlement(): void {
+    $this->configureSoftClose(600);
+
+    $this->clockTime += 600;
+
+    $this->assertSame('closed', $this->processLifecycle());
+
+    $settlement = $this->getSettlement();
+
+    $this->assertNotNull($settlement);
+    $this->assertFalse($settlement->isSold());
+
+    $this->assertSame(
+      'unsold',
+      $settlement->get('outcome')->value,
+    );
+
+    $this->assertTrue(
+      $settlement->get('winner_id')->isEmpty(),
+    );
+
+    $this->assertSame(
+      0,
+      (int) $settlement->get('final_price')->value,
+    );
+  }
+
+  public function testSettlementIsIdempotent(): void {
+    $this->configureSoftClose(600);
+    $this->placeBid($this->bidderA, 2500);
+
+    $this->clockTime += 600;
+
+    $this->assertSame('closed', $this->processLifecycle());
+
+    $firstId = $this->getSettlement()->id();
+
+    $this->assertSame('unchanged', $this->processLifecycle());
+    $this->assertSame('unchanged', $this->processLifecycle());
+
+    $this->assertSame(
+      $firstId,
+      $this->getSettlement()->id(),
+    );
+
+    $count = \Drupal::entityQuery('marketplace_auction_settlement')
+      ->accessCheck(FALSE)
+      ->condition('auction_id', $this->auction->id())
+      ->count()
+      ->execute();
+
+    $this->assertSame(1, (int) $count);
+  }
+
+  public function testProxySettlementUsesPublicPrice(): void {
+    $this->enableProxyBidding();
+    $this->configureSoftClose(600);
+
+    $this->placeBid($this->bidderA, 10000);
+    $this->placeBid($this->bidderB, 6000);
+
+    $this->clockTime += 600;
+
+    $this->assertSame('closed', $this->processLifecycle());
+
+    $settlement = $this->getSettlement();
+
+    $this->assertTrue($settlement->isSold());
+
+    $this->assertSame(
+      (int) $this->bidderA->id(),
+      (int) $settlement->get('winner_id')->target_id,
+    );
+
+    // Charge the public winning price, not the private maximum.
+    $this->assertSame(
+      6100,
+      (int) $settlement->get('final_price')->value,
+    );
+  }
+
+  public function testSettlementRespectsExtendedDeadline(): void {
+    $this->configureSoftClose(60);
+
+    $this->placeBid($this->bidderA, 2500);
+
+    // Original deadline has arrived, but soft close extended it.
+    $this->clockTime += 60;
+
+    $this->assertSame('unchanged', $this->processLifecycle());
+    $this->assertNull($this->getSettlement());
+
+    // Effective closing time has now arrived.
+    $this->clockTime += 60;
+
+    $this->assertSame('closed', $this->processLifecycle());
+    $this->assertNotNull($this->getSettlement());
+  }
+
+  public function testSettlementCannotBeModified(): void {
+    $this->configureSoftClose(600);
+    $this->placeBid($this->bidderA, 2500);
+
+    $this->clockTime += 600;
+
+    $this->assertSame('closed', $this->processLifecycle());
+
+    $settlement = $this->getSettlement();
+
+    $settlement->set('final_price', 100);
+
+    $this->expectException(
+      \Drupal\Core\Entity\EntityStorageException::class,
+    );
+
+    $this->expectExceptionMessage(
+      'settlement records cannot be modified',
+    );
+
+    $settlement->save();
+  }
+
+  public function testSettlementDatabaseUniqueness(): void {
+    $this->configureSoftClose(600);
+    $this->placeBid($this->bidderA, 2500);
+
+    $this->clockTime += 600;
+
+    $this->assertSame('closed', $this->processLifecycle());
+
+    $duplicate = $this->getSettlement()->createDuplicate();
+
+    $this->expectException(
+      \Drupal\Core\Entity\EntityStorageException::class,
+    );
+
+    $duplicate->save();
   }
 
 }

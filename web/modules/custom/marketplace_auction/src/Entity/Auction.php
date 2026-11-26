@@ -7,6 +7,9 @@ namespace Drupal\marketplace_auction\Entity;
 use Drupal\Core\Entity\Attribute\ContentEntityType;
 use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\marketplace_auction\Service\AuctionIntegrityPolicy;
+
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 
@@ -165,6 +168,26 @@ class Auction extends ContentEntityBase {
    */
   public function usesProxyBidding(): bool {
     return $this->get('bidding_mode')->value === self::MODE_PROXY;
+  }
+
+  /**
+   * Enforces auction integrity before persistence.
+   */
+  public function preSave(EntityStorageInterface $storage): void {
+    parent::preSave($storage);
+
+    if ($this->isNew()) {
+      return;
+    }
+
+    $original = $this->getOriginal();
+
+    if ($original instanceof self) {
+      (new AuctionIntegrityPolicy())->assertValidUpdate(
+        $original,
+        $this,
+      );
+    }
   }
 
   public function isOpen(int $now): bool {

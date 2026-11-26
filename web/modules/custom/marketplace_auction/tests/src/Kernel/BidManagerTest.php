@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\marketplace_auction\Kernel;
 
+use Drupal\Component\Datetime\TimeInterface;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\marketplace_auction\Entity\Auction;
 use Drupal\marketplace_auction\Exception\BidRejectedException;
@@ -36,6 +37,8 @@ final class BidManagerTest extends KernelTestBase {
     'marketplace_auction',
   ];
 
+  private int $clockTime;
+
   private Auction $auction;
   private User $sellerAccount;
   private User $bidderA;
@@ -43,6 +46,26 @@ final class BidManagerTest extends KernelTestBase {
 
   protected function setUp(): void {
     parent::setUp();
+
+    // Replace the real clock with a controllable test clock.
+    $this->clockTime = time();
+
+    $clock = $this->createMock(TimeInterface::class);
+
+    $clock->method('getCurrentTime')
+      ->willReturnCallback(fn (): int => $this->clockTime);
+
+    $clock->method('getRequestTime')
+      ->willReturnCallback(fn (): int => $this->clockTime);
+
+    $clock->method('getCurrentMicroTime')
+      ->willReturnCallback(fn (): float => (float) $this->clockTime);
+
+    $clock->method('getRequestMicroTime')
+      ->willReturnCallback(fn (): float => (float) $this->clockTime);
+
+    $this->container->set('datetime.time', $clock);
+
 
     $this->installSchema('user', ['users_data']);
     $this->installSchema('file', ['file_usage']);
@@ -431,11 +454,12 @@ final class BidManagerTest extends KernelTestBase {
 
   public function testPrivateMaximumDoesNotExtendDeadline(): void {
     $this->enableProxyBidding();
-    $this->configureSoftClose(600);
+    $original = $this->configureSoftClose(600);
 
     $this->placeBid($this->bidderA, 10000);
 
-    $original = $this->configureSoftClose(60);
+    // Advance time without modifying the committed auction.
+    $this->clockTime += 540;
 
     $this->placeBid($this->bidderA, 15000);
 
@@ -500,6 +524,123 @@ final class BidManagerTest extends KernelTestBase {
         (int) $auction->get('extension_count')->value,
       );
     }
+  }
+
+
+  public function testCommittedTermsAreImmutable(): void {
+    $this->configureSoftClose(600);
+    $this->placeBid($this->bidderA, 2500);
+
+    $changes = [
+      'title' => 'Different plant',
+      'description' => [
+        'value' => 'Changed specimen',
+        'format' => 'plain_text',
+      ],
+      'images' => [['target_id' => 999]],
+      'seller_id' => $this->bidderB->id(),
+      'seller_profile_id' => 999,
+      'starting_price' => 100,
+      'bid_increment' => 500,
+      'bidding_mode' => Auction::MODE_PROXY,
+      'currency' => 'EUR',
+      'starts_at' => $this->clockTime - 1200,
+      'original_ends_at' => $this->clockTime + 900,
+      'soft_close_window' => 300,
+      'soft_close_extension' => 300,
+    ];
+
+    foreach ($changes as $field => $value) {
+      $auction = $this->reloadAuction();
+      $before = $auction->get($field)->getValue();
+
+      $auction->set($field, $value);
+
+      try {
+        $auction->save();
+        $this->fail("Protected field $field was modified.");
+      }
+      catch (\Drupal\Core\Entity\EntityStorageException $e) {
+        $this->assertStringContainsString(
+          'cannot change after bidding begins',
+          $e->getMessage(),
+        );
+      }
+
+      $this->assertSame(
+        $before,
+        $this->reloadAuction()->get($field)->getValue(),
+      );
+    }
+  }
+
+  public function testDeadlineCannotBeShortened(): void {
+    $original = $this->configureSoftClose(600);
+
+    $this->placeBid($this->bidderA, 2500);
+
+    $auction = $this->reloadAuction();
+    $auction->set('ends_at', $original - 100);
+
+    $this->expectException(
+      \Drupal\Core\Entity\EntityStorageException::class,
+    );
+
+    $this->expectExceptionMessage(
+      'deadline cannot be shortened',
+    );
+
+    $auction->save();
+  }
+
+  public function testCurrentPriceCannotDecrease(): void {
+    $this->placeBid($this->bidderA, 2500);
+
+    $auction = $this->reloadAuction();
+    $auction->set('current_price', 100);
+
+    $this->expectException(
+      \Drupal\Core\Entity\EntityStorageException::class,
+    );
+
+    $this->expectExceptionMessage(
+      'current auction price cannot decrease',
+    );
+
+    $auction->save();
+  }
+
+  public function testBidCountCannotDecrease(): void {
+    $this->placeBid($this->bidderA, 2500);
+
+    $auction = $this->reloadAuction();
+    $auction->set('bid_count', 0);
+
+    $this->expectException(
+      \Drupal\Core\Entity\EntityStorageException::class,
+    );
+
+    $this->expectExceptionMessage(
+      'bid count cannot decrease',
+    );
+
+    $auction->save();
+  }
+
+  public function testTermsEditableBeforeBidding(): void {
+    $auction = $this->reloadAuction();
+
+    $auction->set('title', 'Updated Monstera');
+    $auction->set('starting_price', 3000);
+    $auction->save();
+
+    $auction = $this->reloadAuction();
+
+    $this->assertSame('Updated Monstera', $auction->label());
+    $this->assertSame(
+      3000,
+      (int) $auction->get('starting_price')->value,
+    );
   }
 
 }

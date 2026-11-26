@@ -11,3 +11,9 @@ marketplace_auction.settings:
     default_duration_hours:
       type: integer
       label: 'Default auction duration in hours'
+    default_soft_close_window:
+      type: integer
+      label: 'Default soft close trigger window in seconds'
+    default_soft_close_extension:
+      type: integer
+      label: 'Default soft close extension in seconds'

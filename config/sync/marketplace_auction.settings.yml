@@ -3,3 +3,5 @@ _core:
 currency: USD
 default_bid_increment: 100
 default_duration_hours: 168
+default_soft_close_window: 120
+default_soft_close_extension: 120

@@ -22,6 +22,7 @@ final class BidManager {
     private readonly TimeInterface $time,
     private readonly ProxyBidRepository $proxyRepository,
     private readonly ProxyBidResolver $proxyResolver,
+    private readonly SoftClosePolicy $softClosePolicy,
   ) {}
 
   /**
@@ -162,6 +163,25 @@ final class BidManager {
         (int) $auction->get('bid_count')->value + 1
       );
       $auction->set('leading_bid_id', $bid->id());
+
+      // Only public competitive activity can extend the auction.
+      $endsAt = (int) $auction->get('ends_at')->value;
+
+      $newEndsAt = $this->softClosePolicy->resolve(
+        $endsAt,
+        $now,
+        (int) $auction->get('soft_close_window')->value,
+        (int) $auction->get('soft_close_extension')->value,
+      );
+
+      if ($newEndsAt > $endsAt) {
+        $auction->set('ends_at', $newEndsAt);
+        $auction->set(
+          'extension_count',
+          (int) $auction->get('extension_count')->value + 1,
+        );
+      }
+
 
       $auction->save();
 

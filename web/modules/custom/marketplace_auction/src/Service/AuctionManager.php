@@ -72,6 +72,25 @@ final class AuctionManager {
       throw new \DomainException('Invalid auction duration.');
     }
 
+    $config = \Drupal::config('marketplace_auction.settings');
+
+    $softCloseWindow = (int) $config->get(
+      'default_soft_close_window'
+    );
+
+    $softCloseExtension = (int) $config->get(
+      'default_soft_close_extension'
+    );
+
+    if (
+      $softCloseWindow < 0 || $softCloseWindow > 3600
+      || $softCloseExtension < 0 || $softCloseExtension > 3600
+    ) {
+      throw new \DomainException(
+        'Invalid marketplace soft close configuration.'
+      );
+    }
+
     $now = $this->time->getCurrentTime();
 
     $transaction = $this->database->startTransaction();
@@ -101,6 +120,10 @@ final class AuctionManager {
           'bid_count' => 0,
           'starts_at' => $now,
           'ends_at' => $now + ($durationHours * 3600),
+          'original_ends_at' => $now + ($durationHours * 3600),
+          'soft_close_window' => $softCloseWindow,
+          'soft_close_extension' => $softCloseExtension,
+          'extension_count' => 0,
         ]);
 
       $violations = $auction->validate();

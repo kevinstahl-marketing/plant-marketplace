@@ -7,6 +7,7 @@ services:
       - '@datetime.time'
       - '@marketplace_auction.proxy_bid_repository'
       - '@marketplace_auction.proxy_bid_resolver'
+      - '@marketplace_auction.soft_close_policy'
 
   marketplace_auction.lifecycle:
     class: Drupal\marketplace_auction\Service\AuctionLifecycle
@@ -42,3 +43,6 @@ services:
 
   marketplace_auction.proxy_bid_resolver:
     class: Drupal\marketplace_auction\Service\ProxyBidResolver
+
+  marketplace_auction.soft_close_policy:
+    class: Drupal\marketplace_auction\Service\SoftClosePolicy

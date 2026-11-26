@@ -194,3 +194,77 @@ function marketplace_auction_update_11004(): string {
 
   return "Bidding modes installed; $updated existing auctions initialized.";
 }
+
+/**
+ * Installs configurable soft close fields.
+ */
+function marketplace_auction_update_11005(): string {
+  $manager = \Drupal::entityDefinitionUpdateManager();
+
+  $definitions = \Drupal::service('entity_field.manager')
+    ->getFieldStorageDefinitions('marketplace_auction');
+
+  foreach ([
+    'soft_close_window',
+    'soft_close_extension',
+    'original_ends_at',
+    'extension_count',
+  ] as $field) {
+    if (!$manager->getFieldStorageDefinition(
+      $field,
+      'marketplace_auction',
+    )) {
+      $manager->installFieldStorageDefinition(
+        $field,
+        'marketplace_auction',
+        'marketplace_auction',
+        $definitions[$field],
+      );
+    }
+  }
+
+  $database = \Drupal::database();
+
+  $database->update('marketplace_auction')
+    ->expression('original_ends_at', 'ends_at')
+    ->isNull('original_ends_at')
+    ->execute();
+
+  foreach ([
+    'soft_close_window',
+    'soft_close_extension',
+    'extension_count',
+  ] as $field) {
+    $database->update('marketplace_auction')
+      ->fields([$field => 0])
+      ->isNull($field)
+      ->execute();
+  }
+
+  \Drupal::entityTypeManager()
+    ->getStorage('marketplace_auction')
+    ->resetCache();
+
+  return 'Soft close fields installed; existing deadlines preserved.';
+}
+
+/**
+ * Establishes default soft close configuration.
+ */
+function marketplace_auction_update_11006(): string {
+  $config = \Drupal::configFactory()
+    ->getEditable('marketplace_auction.settings');
+
+  foreach ([
+    'default_soft_close_window' => 120,
+    'default_soft_close_extension' => 120,
+  ] as $key => $value) {
+    if ($config->get($key) === NULL) {
+      $config->set($key, $value);
+    }
+  }
+
+  $config->save(TRUE);
+
+  return 'Default soft close configuration established.';
+}

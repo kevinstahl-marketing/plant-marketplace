@@ -131,6 +131,26 @@ class Auction extends ContentEntityBase {
       ->setLabel(t('End time'))
       ->setRequired(TRUE);
 
+    $fields['soft_close_window'] = BaseFieldDefinition::create('integer')
+      ->setLabel(t('Soft close trigger window (seconds)'))
+      ->setSetting('min', 0)
+      ->setSetting('max', 3600)
+      ->setDefaultValue(0);
+
+    $fields['soft_close_extension'] = BaseFieldDefinition::create('integer')
+      ->setLabel(t('Soft close extension (seconds)'))
+      ->setSetting('min', 0)
+      ->setSetting('max', 3600)
+      ->setDefaultValue(0);
+
+    $fields['original_ends_at'] = BaseFieldDefinition::create('timestamp')
+      ->setLabel(t('Original closing time'));
+
+    $fields['extension_count'] = BaseFieldDefinition::create('integer')
+      ->setLabel(t('Extension count'))
+      ->setSetting('min', 0)
+      ->setDefaultValue(0);
+
     $fields['created'] = BaseFieldDefinition::create('created')
       ->setLabel(t('Created'));
 

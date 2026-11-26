@@ -363,4 +363,143 @@ final class BidManagerTest extends KernelTestBase {
   }
 
 
+
+  /**
+   * Configures the test auction's closing policy.
+   */
+  private function configureSoftClose(
+    int $remaining,
+    int $window = 120,
+    int $extension = 120,
+  ): int {
+    $now = \Drupal::time()->getCurrentTime();
+    $ends = $now + $remaining;
+
+    $auction = $this->reloadAuction();
+
+    $auction->set('starts_at', $now - 600);
+    $auction->set('ends_at', $ends);
+    $auction->set('original_ends_at', $ends);
+    $auction->set('soft_close_window', $window);
+    $auction->set('soft_close_extension', $extension);
+    $auction->set('extension_count', 0);
+    $auction->save();
+
+    return $ends;
+  }
+
+  public function testSoftCloseExtendsDeadline(): void {
+    $original = $this->configureSoftClose(60);
+
+    $this->placeBid($this->bidderA, 2500);
+
+    $auction = $this->reloadAuction();
+
+    $this->assertGreaterThan(
+      $original,
+      (int) $auction->get('ends_at')->value,
+    );
+
+    $this->assertSame(
+      $original,
+      (int) $auction->get('original_ends_at')->value,
+    );
+
+    $this->assertSame(
+      1,
+      (int) $auction->get('extension_count')->value,
+    );
+  }
+
+  public function testSoftCloseOutsideWindow(): void {
+    $original = $this->configureSoftClose(600);
+
+    $this->placeBid($this->bidderA, 2500);
+
+    $auction = $this->reloadAuction();
+
+    $this->assertSame(
+      $original,
+      (int) $auction->get('ends_at')->value,
+    );
+
+    $this->assertSame(
+      0,
+      (int) $auction->get('extension_count')->value,
+    );
+  }
+
+  public function testPrivateMaximumDoesNotExtendDeadline(): void {
+    $this->enableProxyBidding();
+    $this->configureSoftClose(600);
+
+    $this->placeBid($this->bidderA, 10000);
+
+    $original = $this->configureSoftClose(60);
+
+    $this->placeBid($this->bidderA, 15000);
+
+    $auction = $this->reloadAuction();
+
+    $this->assertSame(
+      $original,
+      (int) $auction->get('ends_at')->value,
+    );
+
+    $this->assertSame(
+      0,
+      (int) $auction->get('extension_count')->value,
+    );
+
+    $this->assertSame(
+      2500,
+      (int) $auction->get('current_price')->value,
+    );
+  }
+
+  public function testDisabledSoftClose(): void {
+    $original = $this->configureSoftClose(60, 0, 0);
+
+    $this->placeBid($this->bidderA, 2500);
+
+    $auction = $this->reloadAuction();
+
+    $this->assertSame(
+      $original,
+      (int) $auction->get('ends_at')->value,
+    );
+
+    $this->assertSame(
+      0,
+      (int) $auction->get('extension_count')->value,
+    );
+  }
+
+  public function testExpiredAuctionCannotBeExtended(): void {
+    $original = $this->configureSoftClose(-10);
+
+    try {
+      $this->placeBid($this->bidderA, 2500);
+      $this->fail('An expired auction accepted a bid.');
+    }
+    catch (\Drupal\marketplace_auction\Exception\BidRejectedException $e) {
+      $auction = $this->reloadAuction();
+
+      $this->assertSame(
+        $original,
+        (int) $auction->get('ends_at')->value,
+      );
+
+      $this->assertSame(
+        0,
+        (int) $auction->get('bid_count')->value,
+      );
+
+      $this->assertSame(
+        0,
+        (int) $auction->get('extension_count')->value,
+      );
+    }
+  }
+
 }

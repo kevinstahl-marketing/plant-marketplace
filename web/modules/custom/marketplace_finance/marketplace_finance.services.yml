@@ -13,3 +13,16 @@ services:
       - '@entity_type.manager'
       - '@marketplace_finance.commission_calculator'
       - '@datetime.time'
+
+  marketplace_finance.stripe_reconciliation:
+    class: Drupal\marketplace_finance\Service\StripeReconciliationManager
+    arguments:
+      - '@database'
+      - '@entity_type.manager'
+      - '@marketplace_finance.transaction_manager'
+      - '@datetime.time'
+      - '@lock'
+
+  marketplace_finance.reporting:
+    class: Drupal\marketplace_finance\Service\FinanceReporting
+    arguments: ['@database']

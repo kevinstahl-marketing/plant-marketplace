@@ -15,10 +15,6 @@ final class FinanceController extends ControllerBase {
     $database = \Drupal::database();
     $manager = $this->entityTypeManager();
 
-    $calculator = \Drupal::service(
-      'marketplace_finance.commission_calculator'
-    );
-
     $rate = (int) $this->config(
       'marketplace_finance.settings'
     )->get('commission_basis_points');
@@ -74,18 +70,23 @@ final class FinanceController extends ControllerBase {
       $amount = (int) $settlement
         ->get('final_price')->value;
 
-      $auction = $settlement->get('auction_id')->entity;
+      $agreement = \Drupal::service(
+        'marketplace_finance.transaction_manager'
+      )->loadByOrder((int) $order->id());
 
-      if (!$auction
-        || $auction->get('commission_snapshot_bps')->isEmpty()) {
+      if (!$agreement) {
         $skipped++;
         continue;
       }
 
-      $lockedRate = (int) $auction
-        ->get('commission_snapshot_bps')->value;
+      $lockedRate = (int) $agreement['commission_bps'];
+      $amount = (int) $agreement['merchandise_amount'];
 
-      $split = $calculator->calculate($amount, $lockedRate);
+      $split = [
+        'gross' => $amount,
+        'commission' => (int) $agreement['commission_amount'],
+        'seller_proceeds' => (int) $agreement['seller_proceeds'],
+      ];
 
       $seller = $settlement
         ->get('seller_profile_id')->entity;
@@ -189,9 +190,119 @@ final class FinanceController extends ControllerBase {
       '#empty' => $this->t('No auction orders found.'),
     ];
 
+    $build['stripe'] = $this->stripeReporting();
+
     $build['#cache']['max-age'] = 0;
 
     return $build;
+  }
+
+  private function stripeReporting(): array {
+    $reporting = \Drupal::service(
+      'marketplace_finance.reporting'
+    );
+
+    $observations = $reporting->latestPaymentObservations();
+
+    $rows = [];
+    $received = 0;
+    $fees = 0;
+    $net = 0;
+    $refunded = 0;
+    $matched = 0;
+    $discrepancies = 0;
+    $pending = 0;
+    $seen = [];
+
+    foreach ($observations as $record) {
+      if ((int) $record['livemode'] !== 0
+        || $record['currency'] !== 'USD') {
+        continue;
+      }
+
+      $status = $record['reconciliation_status'];
+
+      // Avoid counting a remote payment more than once.
+      $intent = $record['payment_intent_id'];
+
+      if (isset($seen[$intent])) {
+        $status = 'duplicate_reference';
+      }
+
+      $seen[$intent] = TRUE;
+
+      if ($status === 'matched') {
+        $received += (int) $record['stripe_received'];
+        $fees += (int) $record['stripe_fee'];
+        $net += (int) $record['stripe_net'];
+        $refunded += (int) $record['stripe_refunded'];
+        $matched++;
+      }
+      elseif ($status === 'pending') {
+        $pending++;
+      }
+      else {
+        $discrepancies++;
+      }
+
+      $rows[] = [
+        '#' . $record['order_id'],
+        '#' . $record['commerce_payment_id'],
+        $this->money((int) $record['stripe_received']),
+        $record['stripe_fee'] === NULL
+          ? 'Unknown'
+          : $this->money((int) $record['stripe_fee']),
+        $record['stripe_net'] === NULL
+          ? 'Unknown'
+          : $this->money((int) $record['stripe_net']),
+        $this->money((int) $record['stripe_refunded']),
+        $record['balance_status'] ?? 'Unknown',
+        $status,
+        gmdate('Y-m-d H:i:s', (int) $record['observed_at']) . ' UTC',
+      ];
+    }
+
+    return [
+      'heading' => [
+        '#markup' => '<h2>Stripe reconciliation — test mode</h2>',
+      ],
+      'notice' => [
+        '#markup' => '<p>Latest stored payment observations. '
+          . 'Totals include matched test payments only. '
+          . 'Charge net excludes subsequent refund balance transactions. '
+          . 'These amounts are not available seller balances.</p>',
+      ],
+      'summary' => [
+        '#type' => 'table',
+        '#header' => ['Metric', 'Value'],
+        '#rows' => [
+          ['Verified Stripe receipts', $this->money($received)],
+          ['Actual charge processing fees', $this->money($fees)],
+          ['Original charge net', $this->money($net)],
+          ['Reported refunds', $this->money($refunded)],
+          ['Matched payments', $matched],
+          ['Pending reconciliation', $pending],
+          ['Discrepancies', $discrepancies],
+        ],
+      ],
+      'payments' => [
+        '#type' => 'table',
+        '#caption' => 'Latest Stripe payment observations',
+        '#header' => [
+          'Order',
+          'Payment',
+          'Received',
+          'Fee',
+          'Charge net',
+          'Refunded',
+          'Funds status',
+          'Reconciliation',
+          'Last observation',
+        ],
+        '#rows' => $rows,
+        '#empty' => 'No reconciled payments found.',
+      ],
+    ];
   }
 
   private function money(int $cents): string {

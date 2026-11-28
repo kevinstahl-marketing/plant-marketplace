@@ -156,6 +156,127 @@ function marketplace_finance_schema(): array {
     ],
   ];
 
+  $schema['marketplace_finance_payment_snapshot'] = [
+    'description' => 'Historical observations of Stripe payment reconciliation.',
+    'fields' => [
+      'id' => [
+        'type' => 'serial',
+        'not null' => TRUE,
+      ],
+      'transaction_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+      'commerce_payment_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+      'gateway_id' => [
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+      ],
+      'payment_intent_id' => [
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+      ],
+      'charge_id' => [
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => FALSE,
+      ],
+      'balance_transaction_id' => [
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => FALSE,
+      ],
+      'currency' => [
+        'type' => 'varchar',
+        'length' => 3,
+        'not null' => TRUE,
+      ],
+      'commerce_amount' => [
+        'type' => 'int',
+        'size' => 'big',
+        'not null' => TRUE,
+      ],
+      'stripe_received' => [
+        'type' => 'int',
+        'size' => 'big',
+        'not null' => TRUE,
+      ],
+      'stripe_fee' => [
+        'type' => 'int',
+        'size' => 'big',
+        'not null' => FALSE,
+      ],
+      'stripe_net' => [
+        'type' => 'int',
+        'size' => 'big',
+        'not null' => FALSE,
+      ],
+      'stripe_refunded' => [
+        'type' => 'int',
+        'size' => 'big',
+        'not null' => TRUE,
+      ],
+      'commerce_refunded' => [
+        'type' => 'int',
+        'size' => 'big',
+        'not null' => TRUE,
+      ],
+      'stripe_status' => [
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+      ],
+      'commerce_status' => [
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+      ],
+      'balance_status' => [
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => FALSE,
+      ],
+      'livemode' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+      ],
+      'reconciliation_status' => [
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+      ],
+      'discrepancies' => [
+        'type' => 'text',
+        'not null' => FALSE,
+      ],
+      'fingerprint' => [
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+      ],
+      'observed_at' => [
+        'type' => 'int',
+        'size' => 'big',
+        'not null' => TRUE,
+      ],
+    ],
+    'primary key' => ['id'],
+    'indexes' => [
+      'transaction' => ['transaction_id'],
+      'payment_history' => ['commerce_payment_id', 'id'],
+      'intent' => ['payment_intent_id'],
+      'observed' => ['observed_at'],
+    ],
+  ];
+
   return $schema;
 }
 
@@ -175,4 +296,23 @@ function marketplace_finance_update_11003(): string {
   }
 
   return 'Created marketplace financial transaction storage.';
+}
+
+
+/**
+ * Creates historical Stripe reconciliation storage.
+ */
+function marketplace_finance_update_11004(): string {
+  $schema = \Drupal::database()->schema();
+
+  if (!$schema->tableExists('marketplace_finance_payment_snapshot')) {
+    $definitions = marketplace_finance_schema();
+
+    $schema->createTable(
+      'marketplace_finance_payment_snapshot',
+      $definitions['marketplace_finance_payment_snapshot'],
+    );
+  }
+
+  return 'Created Stripe payment reconciliation storage.';
 }

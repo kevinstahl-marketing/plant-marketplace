@@ -6,3 +6,4 @@ core_version_requirement: ^11
 dependencies:
   - marketplace_order:marketplace_order
   - commerce:commerce_payment
+  - commerce_stripe:commerce_stripe

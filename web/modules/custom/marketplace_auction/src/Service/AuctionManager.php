@@ -38,6 +38,7 @@ final class AuctionManager {
     int $durationHours,
     array $photos,
     ShippingSpecification $shipping,
+    ?string $biddingMode = NULL,
   ): Auction {
 
     $seller = $this->sellerManager
@@ -75,6 +76,27 @@ final class AuctionManager {
     }
 
     $config = \Drupal::config('marketplace_auction.settings');
+
+    $defaultMode = $config->get('default_bidding_mode')
+      ?? Auction::MODE_PROXY;
+
+    if ($biddingMode === NULL) {
+      $biddingMode = $defaultMode;
+    }
+
+    if (!in_array($biddingMode, [
+      Auction::MODE_DIRECT,
+      Auction::MODE_PROXY,
+    ], TRUE)) {
+      throw new \DomainException('Invalid bidding mode.');
+    }
+
+    if (!($config->get('allow_seller_bidding_mode') ?? TRUE)
+      && $biddingMode !== $defaultMode) {
+      throw new \DomainException(
+        'Seller selection of bidding mode is disabled.'
+      );
+    }
 
     $softCloseWindow = (int) $config->get(
       'default_soft_close_window'
@@ -116,6 +138,7 @@ final class AuctionManager {
           'seller_profile_id' => $seller->id(),
           'status' => Auction::STATUS_OPEN,
           'currency' => 'USD',
+          'bidding_mode' => $biddingMode,
           'starting_price' => $startingPrice,
           'bid_increment' => $bidIncrement,
           'current_price' => 0,

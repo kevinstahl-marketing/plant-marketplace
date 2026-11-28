@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Drupal\marketplace_auction\Form;
 
 use Drupal\Core\Form\FormBase;
+use Drupal\marketplace_auction\Entity\Auction;
 use Drupal\marketplace_auction\Service\AuctionMediaManager;
 use Drupal\marketplace_auction\ValueObject\ShippingSpecification;
 use Drupal\Core\Form\FormStateInterface;
@@ -123,6 +124,31 @@ final class AuctionCreateForm extends FormBase {
         ''
       ),
     ];
+
+    $defaultMode = $config->get('default_bidding_mode')
+      ?? Auction::MODE_PROXY;
+
+    if ($config->get('allow_seller_bidding_mode') ?? TRUE) {
+      $form['bidding_mode'] = [
+        '#type' => 'radios',
+        '#title' => $this->t('Bidding mode'),
+        '#options' => [
+          Auction::MODE_PROXY => $this->t('Automatic proxy bidding'),
+          Auction::MODE_DIRECT => $this->t('Direct bidding'),
+        ],
+        '#default_value' => $defaultMode,
+        '#required' => TRUE,
+        '#description' => $this->t(
+          'Proxy bidding allows buyers to enter a maximum amount. Direct bidding places the entered amount immediately.'
+        ),
+      ];
+    }
+    else {
+      $form['bidding_mode'] = [
+        '#type' => 'value',
+        '#value' => $defaultMode,
+      ];
+    }
 
     $form['duration'] = [
       '#type' => 'select',
@@ -380,6 +406,7 @@ final class AuctionCreateForm extends FormBase {
           (int) $form_state->getValue('duration'),
           $form_state->get('validated_photos', []),
           $specification,
+          (string) $form_state->getValue('bidding_mode'),
         );
     }
     catch (\DomainException $exception) {

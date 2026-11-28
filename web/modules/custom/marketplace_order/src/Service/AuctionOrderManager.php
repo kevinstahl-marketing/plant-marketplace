@@ -67,6 +67,11 @@ final class AuctionOrderManager {
           throw new \DomainException('Mapped order is missing.');
         }
 
+        \Drupal::moduleHandler()->invokeAll(
+          'marketplace_order_ready',
+          [$settlementId, $order],
+        );
+
         unset($transaction);
         return $order;
       }
@@ -224,6 +229,11 @@ final class AuctionOrderManager {
           'created' => $this->time->getCurrentTime(),
         ])
         ->execute();
+
+      \Drupal::moduleHandler()->invokeAll(
+        'marketplace_order_ready',
+        [$settlementId, $order],
+      );
 
       unset($transaction);
 

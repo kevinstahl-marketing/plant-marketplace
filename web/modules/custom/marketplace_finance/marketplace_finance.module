@@ -172,3 +172,23 @@ function marketplace_finance_entity_presave(
     \Drupal::time()->getCurrentTime(),
   );
 }
+
+/**
+ * Implements hook_marketplace_order_ready().
+ *
+ * Records financial terms within the order creation transaction.
+ */
+function marketplace_finance_marketplace_order_ready(
+  int $settlement_id,
+  \Drupal\commerce_order\Entity\OrderInterface $order,
+): void {
+  $record = \Drupal::service(
+    'marketplace_finance.transaction_manager'
+  )->record($settlement_id);
+
+  if ((int) $record['order_id'] !== (int) $order->id()) {
+    throw new \DomainException(
+      'Financial transaction order mismatch.'
+    );
+  }
+}

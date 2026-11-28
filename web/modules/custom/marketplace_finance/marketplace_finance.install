@@ -67,3 +67,112 @@ function marketplace_finance_update_11002(): string {
     $count,
   );
 }
+
+/**
+ * Implements hook_schema().
+ */
+function marketplace_finance_schema(): array {
+  $schema['marketplace_finance_transaction'] = [
+    'description' => 'Immutable marketplace sale agreements.',
+    'fields' => [
+      'id' => [
+        'type' => 'serial',
+        'not null' => TRUE,
+      ],
+      'settlement_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+      'auction_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+      'order_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+      'seller_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+      'buyer_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+      'currency' => [
+        'type' => 'varchar',
+        'length' => 3,
+        'not null' => TRUE,
+      ],
+      'merchandise_amount' => [
+        'type' => 'int',
+        'size' => 'big',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+      'commission_bps' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+      'commission_amount' => [
+        'type' => 'int',
+        'size' => 'big',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+      'seller_proceeds' => [
+        'type' => 'int',
+        'size' => 'big',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ],
+      'commission_source' => [
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+      ],
+      'created' => [
+        'type' => 'int',
+        'size' => 'big',
+        'not null' => TRUE,
+      ],
+    ],
+    'primary key' => ['id'],
+    'unique keys' => [
+      'settlement' => ['settlement_id'],
+      'order' => ['order_id'],
+      'auction' => ['auction_id'],
+    ],
+    'indexes' => [
+      'seller' => ['seller_id'],
+      'buyer' => ['buyer_id'],
+      'created' => ['created'],
+    ],
+  ];
+
+  return $schema;
+}
+
+/**
+ * Creates persistent marketplace financial transaction storage.
+ */
+function marketplace_finance_update_11003(): string {
+  $schema = \Drupal::database()->schema();
+
+  if (!$schema->tableExists('marketplace_finance_transaction')) {
+    $definitions = marketplace_finance_schema();
+
+    $schema->createTable(
+      'marketplace_finance_transaction',
+      $definitions['marketplace_finance_transaction'],
+    );
+  }
+
+  return 'Created marketplace financial transaction storage.';
+}

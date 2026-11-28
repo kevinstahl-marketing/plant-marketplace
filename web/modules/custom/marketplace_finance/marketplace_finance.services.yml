@@ -5,3 +5,11 @@ services:
   marketplace_finance.commission_resolver:
     class: Drupal\marketplace_finance\Service\CommissionResolver
     arguments: ['@config.factory']
+
+  marketplace_finance.transaction_manager:
+    class: Drupal\marketplace_finance\Service\FinancialTransactionManager
+    arguments:
+      - '@database'
+      - '@entity_type.manager'
+      - '@marketplace_finance.commission_calculator'
+      - '@datetime.time'

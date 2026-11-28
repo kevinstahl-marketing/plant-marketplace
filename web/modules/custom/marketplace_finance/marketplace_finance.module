@@ -192,3 +192,54 @@ function marketplace_finance_marketplace_order_ready(
     );
   }
 }
+
+/**
+ * Implements hook_cron().
+ */
+function marketplace_finance_cron(): void {
+  $database = \Drupal::database();
+
+  $query = $database->select('commerce_payment', 'p');
+
+  $query->innerJoin(
+    'marketplace_finance_transaction',
+    't',
+    't.order_id = p.order_id'
+  );
+
+  $query->leftJoin(
+    'marketplace_finance_payment_snapshot',
+    's',
+    's.commerce_payment_id = p.payment_id'
+  );
+
+  $query->fields('p', ['payment_id']);
+  $query->addExpression(
+    'COALESCE(MAX(s.observed_at), 0)',
+    'last_observation'
+  );
+
+  $query->condition('p.payment_gateway_mode', 'test');
+  $query->condition('p.remote_id', 'pi_%', 'LIKE');
+  $query->groupBy('p.payment_id');
+
+  $query->having(
+    'COALESCE(MAX(s.observed_at), 0) < :cutoff',
+    [
+      ':cutoff' => \Drupal::time()->getCurrentTime() - 3600,
+    ]
+  );
+
+  $query->orderBy('last_observation', 'ASC');
+  $query->range(0, 50);
+
+  $queue = \Drupal::queue(
+    'marketplace_finance_reconciliation'
+  );
+
+  foreach ($query->execute() as $row) {
+    $queue->createItem([
+      'payment_id' => (int) $row->payment_id,
+    ]);
+  }
+}

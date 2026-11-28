@@ -26,3 +26,11 @@ services:
   marketplace_finance.reporting:
     class: Drupal\marketplace_finance\Service\FinanceReporting
     arguments: ['@database']
+
+  marketplace_finance.payment_subscriber:
+    class: Drupal\marketplace_finance\EventSubscriber\PaymentSubscriber
+    arguments:
+      - '@queue'
+      - '@marketplace_finance.transaction_manager'
+    tags:
+      - { name: event_subscriber }

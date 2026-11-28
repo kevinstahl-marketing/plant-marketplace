@@ -1,0 +1,11 @@
+uuid: b3b25b0c-e9b7-43d6-91dc-4909b51d2317
+langcode: en
+status: true
+dependencies:
+  module:
+    - marketplace_seller
+id: marketplace_seller.token
+label: Token
+description: null
+targetEntityType: marketplace_seller
+cache: true

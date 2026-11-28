@@ -1,0 +1,13 @@
+uuid: 8ba820cd-835a-4f41-aed3-d0a5c04c69ff
+langcode: en
+status: true
+dependencies: {  }
+id: auction_lot
+label: 'Auction lot'
+traits: {  }
+locked: false
+description: ''
+variationTypes:
+  - auction_lot
+multipleVariations: false
+injectVariationFields: false

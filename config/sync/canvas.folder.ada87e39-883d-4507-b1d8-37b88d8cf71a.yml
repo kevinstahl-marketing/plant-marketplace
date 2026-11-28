@@ -5,6 +5,7 @@ dependencies:
   config:
     - canvas.component.js.marketplace_hero
     - canvas.component.marker.page_content
+    - canvas.component.sdc.commerce.commerce-status-badge
     - canvas.component.sdc.marketplace.button
     - canvas.component.sdc.marketplace.carousel
     - canvas.component.sdc.marketplace.category-card
@@ -14,6 +15,9 @@ dependencies:
     - canvas.component.sdc.marketplace.header
     - canvas.component.sdc.marketplace.hero
     - canvas.component.sdc.marketplace.product-card
+    - canvas.component.sdc.marketplace.product-detail
+    - canvas.component.sdc.marketplace.product-gallery
+    - canvas.component.sdc.marketplace.product-price
     - canvas.component.sdc.marketplace.search-box
     - canvas.component.sdc.marketplace.search-chip
     - canvas.component.sdc.navigation.message
@@ -25,6 +29,7 @@ weight: 0
 items:
   - js.marketplace_hero
   - marker.page_content
+  - sdc.commerce.commerce-status-badge
   - sdc.marketplace.button
   - sdc.marketplace.carousel
   - sdc.marketplace.category-card
@@ -34,6 +39,9 @@ items:
   - sdc.marketplace.header
   - sdc.marketplace.hero
   - sdc.marketplace.product-card
+  - sdc.marketplace.product-detail
+  - sdc.marketplace.product-gallery
+  - sdc.marketplace.product-price
   - sdc.marketplace.search-box
   - sdc.marketplace.search-chip
   - sdc.navigation.message

@@ -1,0 +1,11 @@
+uuid: 8cb70736-458d-48ca-afb7-6b061e0d8531
+langcode: en
+status: true
+dependencies:
+  module:
+    - marketplace_auction
+id: marketplace_auction_settlement.token
+label: Token
+description: null
+targetEntityType: marketplace_auction_settlement
+cache: true

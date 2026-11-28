@@ -1,0 +1,13 @@
+uuid: e92c3b49-506a-4a78-ad65-2a76940edc51
+langcode: en
+status: true
+dependencies:
+  module:
+    - marketplace_auction
+id: auction_test_bidder
+label: 'Auction Test Bidder'
+weight: 4
+is_admin: false
+permissions:
+  - 'place marketplace bids'
+  - 'view marketplace auctions'

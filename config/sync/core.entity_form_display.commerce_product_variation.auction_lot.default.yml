@@ -1,0 +1,62 @@
+uuid: 44acd4a1-0be6-46a9-92e0-47d706f9d798
+langcode: en
+status: true
+dependencies:
+  config:
+    - commerce_product.commerce_product_variation_type.auction_lot
+    - field.field.commerce_product_variation.auction_lot.weight
+  module:
+    - commerce_price
+    - physical
+id: commerce_product_variation.auction_lot.default
+targetEntityType: commerce_product_variation
+bundle: auction_lot
+mode: default
+content:
+  list_price:
+    type: commerce_list_price
+    weight: -1
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  price:
+    type: commerce_price_default
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  sku:
+    type: string_textfield
+    weight: -4
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  status:
+    type: boolean_checkbox
+    weight: 90
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  title:
+    type: string_textfield
+    weight: -5
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  weight:
+    type: physical_measurement_default
+    weight: 91
+    region: content
+    settings:
+      default_unit: ''
+      allow_unit_change: true
+      available_units: {  }
+    third_party_settings: {  }
+hidden:
+  created: true
+  uid: true

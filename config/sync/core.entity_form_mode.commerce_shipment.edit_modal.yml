@@ -1,0 +1,16 @@
+uuid: 49748edb-dc77-4f9b-914f-d3455bb8c277
+langcode: en
+status: true
+dependencies:
+  module:
+    - commerce_shipping
+  enforced:
+    module:
+      - commerce_shipping
+_core:
+  default_config_hash: 1bnpgBoQkFVTW5iuhIGMkb6C8UCozgvSVi6CwcDpNcw
+id: commerce_shipment.edit_modal
+label: 'Edit modal'
+description: null
+targetEntityType: commerce_shipment
+cache: true

@@ -1,0 +1,14 @@
+uuid: f40f3078-dac3-4836-ba70-cea4f1c03647
+langcode: en
+status: true
+dependencies:
+  config:
+    - user.role.auction_test_bidder
+  module:
+    - user
+id: user_remove_role_action.auction_test_bidder
+label: 'Remove the Auction Test Bidder role from the selected user(s)'
+type: user
+plugin: user_remove_role_action
+configuration:
+  rid: auction_test_bidder

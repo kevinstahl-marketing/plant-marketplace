@@ -1,0 +1,11 @@
+uuid: 312aa95d-cdcd-4be6-ad87-2f6b41b2e9ef
+langcode: en
+status: true
+dependencies:
+  module:
+    - marketplace_auction
+id: marketplace_auction.token
+label: Token
+description: null
+targetEntityType: marketplace_auction
+cache: true

@@ -1,0 +1,14 @@
+uuid: 596ffd86-951b-43bb-92c7-f9d93c1ca472
+langcode: en
+status: true
+dependencies:
+  config:
+    - user.role.marketplace_order_worker
+  module:
+    - user
+id: user_add_role_action.marketplace_order_worker
+label: 'Add the Marketplace order worker role to the selected user(s)'
+type: user
+plugin: user_add_role_action
+configuration:
+  rid: marketplace_order_worker

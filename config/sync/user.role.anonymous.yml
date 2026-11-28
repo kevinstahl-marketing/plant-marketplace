@@ -5,6 +5,9 @@ dependencies:
   config:
     - filter.format.restricted_html
   module:
+    - commerce_checkout
+    - commerce_product
+    - commerce_shipping
     - filter
     - media
     - search
@@ -16,7 +19,10 @@ label: 'Anonymous user'
 weight: 0
 is_admin: false
 permissions:
+  - 'access checkout'
   - 'access content'
   - 'search content'
   - 'use text format restricted_html'
+  - 'view commerce_product'
+  - 'view commerce_shipping_method'
   - 'view media'

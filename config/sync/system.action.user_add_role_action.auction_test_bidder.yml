@@ -1,0 +1,14 @@
+uuid: d0504651-f00b-4c86-8f77-09fcbde661d0
+langcode: en
+status: true
+dependencies:
+  config:
+    - user.role.auction_test_bidder
+  module:
+    - user
+id: user_add_role_action.auction_test_bidder
+label: 'Add the Auction Test Bidder role to the selected user(s)'
+type: user
+plugin: user_add_role_action
+configuration:
+  rid: auction_test_bidder

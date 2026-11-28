@@ -1,0 +1,34 @@
+uuid: 7ce803ad-f34d-46af-96f9-98006bdf6ac3
+langcode: en
+status: true
+dependencies:
+  module:
+    - options
+  theme:
+    - marketplace
+active_version: 705b6d252d27a409
+versioned_properties:
+  active:
+    settings:
+      prop_field_definitions:
+        layout:
+          required: false
+          field_type: list_string
+          field_storage_settings:
+            allowed_values_function: canvas_load_allowed_values_for_component_prop
+          field_instance_settings: {  }
+          field_widget: options_select
+          default_value: null
+          expression: ℹ︎list_string␟value
+          derived_schema_metadata: {  }
+    fallback_metadata:
+      slot_definitions:
+        gallery:
+          title: 'Product gallery'
+        information:
+          title: 'Product information'
+label: 'Product Detail'
+id: sdc.marketplace.product-detail
+provider: marketplace
+source: sdc
+source_local_id: 'marketplace:product-detail'

@@ -1,0 +1,32 @@
+uuid: 0aef50bf-f1e4-4276-872f-4a25fe73a289
+langcode: en
+status: true
+dependencies:
+  module:
+    - commerce_stripe
+id: stripe_test
+label: 'Stripe - Test'
+weight: 0
+plugin: stripe_payment_element
+configuration:
+  display_label: 'Credit or debit card'
+  mode: test
+  payment_method_types:
+    - credit_card
+  collect_billing_information: true
+  api_version: null
+  authentication_method: api_keys
+  access_token: ''
+  stripe_user_id: ''
+  publishable_key: ''
+  secret_key: ''
+  express_checkout:
+    enable_on_cart: false
+    allowed_payment_method_types: {  }
+  webhook_signing_secret: ''
+  payment_method_usage: on_session
+  capture_method: automatic
+  style: {  }
+  checkout_form_display_label: {  }
+conditions: {  }
+conditionOperator: AND

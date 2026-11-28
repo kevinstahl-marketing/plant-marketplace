@@ -1,0 +1,14 @@
+uuid: 6a573dbe-6a69-484a-a65b-a4cb4b3fbd5c
+langcode: en
+status: true
+dependencies:
+  config:
+    - user.role.marketplace_order_worker
+  module:
+    - user
+id: user_remove_role_action.marketplace_order_worker
+label: 'Remove the Marketplace order worker role from the selected user(s)'
+type: user
+plugin: user_remove_role_action
+configuration:
+  rid: marketplace_order_worker

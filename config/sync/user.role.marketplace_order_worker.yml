@@ -1,0 +1,19 @@
+uuid: 077a8c14-733c-4097-add6-999164a0a96c
+langcode: en
+status: true
+dependencies:
+  module:
+    - commerce_order
+    - commerce_product
+    - commerce_store
+id: marketplace_order_worker
+label: 'Marketplace order worker'
+weight: 5
+is_admin: false
+permissions:
+  - 'access user profiles'
+  - 'create auction_lot commerce_product'
+  - 'create auction_order commerce_order'
+  - 'manage auction_lot commerce_product_variation'
+  - 'manage auction_purchase commerce_order_item'
+  - 'view online commerce_store'

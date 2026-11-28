@@ -1,0 +1,11 @@
+uuid: b5e99a13-e576-4524-b094-2a3c8ca31704
+langcode: en
+status: true
+dependencies: {  }
+id: auction_lot
+label: 'Auction lot'
+traits:
+  - purchasable_entity_shippable
+locked: false
+orderItemType: auction_purchase
+generateTitle: false

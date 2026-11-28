@@ -1,0 +1,10 @@
+uuid: a018e128-cdaa-48f1-acf6-27b8907524e6
+langcode: en
+status: true
+dependencies: {  }
+id: auction_purchase
+label: 'Auction purchase'
+traits: {  }
+locked: false
+purchasableEntityType: commerce_product_variation
+orderType: auction_order

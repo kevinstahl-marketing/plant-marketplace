@@ -1,0 +1,174 @@
+<?php
+
+declare(strict_types=1);
+
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\Core\Field\FieldDefinitionInterface;
+use Drupal\Core\Field\FieldItemListInterface;
+use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\Access\AccessResult;
+use Drupal\marketplace_auction\Entity\Auction;
+
+/**
+ * Implements hook_entity_base_field_info().
+ */
+function marketplace_finance_entity_base_field_info(
+  EntityTypeInterface $entity_type,
+): array {
+  $fields = [];
+
+  if ($entity_type->id() === 'marketplace_seller') {
+    $fields['commission_override_bps'] =
+      BaseFieldDefinition::create('integer')
+        ->setLabel(t('Commission override (basis points)'))
+        ->setDescription(t('Empty inherits the marketplace default.'))
+        ->setSetting('min', 0)
+        ->setSetting('max', 10000);
+  }
+
+  if ($entity_type->id() === 'marketplace_auction') {
+    $fields['commission_snapshot_bps'] =
+      BaseFieldDefinition::create('integer')
+        ->setLabel(t('Locked commission (basis points)'))
+        ->setSetting('min', 0)
+        ->setSetting('max', 10000);
+
+    $fields['commission_snapshot_source'] =
+      BaseFieldDefinition::create('string')
+        ->setLabel(t('Commission policy source'))
+        ->setSetting('max_length', 64);
+
+    $fields['commission_locked_at'] =
+      BaseFieldDefinition::create('timestamp')
+        ->setLabel(t('Commission locked at'));
+  }
+
+  return $fields;
+}
+
+/**
+ * Implements hook_entity_field_access().
+ */
+function marketplace_finance_entity_field_access(
+  $operation,
+  FieldDefinitionInterface $field_definition,
+  AccountInterface $account,
+  ?FieldItemListInterface $items = NULL,
+) {
+  $type = $field_definition->getTargetEntityTypeId();
+  $field = $field_definition->getName();
+
+  if ($operation !== 'edit') {
+    return AccessResult::neutral();
+  }
+
+  if ($type === 'marketplace_seller'
+    && $field === 'commission_override_bps') {
+    return AccessResult::forbiddenIf(
+      !$account->hasPermission('administer marketplace finance')
+    )->cachePerPermissions();
+  }
+
+  if ($type === 'marketplace_auction'
+    && in_array($field, [
+      'commission_snapshot_bps',
+      'commission_snapshot_source',
+      'commission_locked_at',
+    ], TRUE)) {
+    return AccessResult::forbidden();
+  }
+
+  return AccessResult::neutral();
+}
+
+/**
+ * Implements hook_entity_presave().
+ */
+function marketplace_finance_entity_presave(
+  EntityInterface $entity,
+): void {
+  if (!$entity instanceof Auction) {
+    return;
+  }
+
+  $fields = [
+    'commission_snapshot_bps',
+    'commission_snapshot_source',
+    'commission_locked_at',
+  ];
+
+  $original = $entity->isNew()
+    ? NULL
+    : $entity->getOriginal();
+
+  // Once recorded, financial terms cannot be overwritten.
+  if ($original instanceof Auction
+    && !$original->get('commission_snapshot_bps')->isEmpty()) {
+
+    foreach ($fields as $field) {
+      if (!$original->get($field)->equals($entity->get($field))) {
+        throw new \DomainException(
+          'Published commission terms cannot be changed.'
+        );
+      }
+    }
+
+    if (!$original->get('seller_profile_id')
+      ->equals($entity->get('seller_profile_id'))
+      || !$original->get('seller_id')
+      ->equals($entity->get('seller_id'))) {
+      throw new \DomainException(
+        'The seller cannot change after commission is locked.'
+      );
+    }
+
+    return;
+  }
+
+  // Do not accept caller-supplied financial snapshots.
+  foreach ($fields as $field) {
+    if (!$entity->get($field)->isEmpty()) {
+      throw new \DomainException(
+        'Commission snapshots must be assigned by the policy resolver.'
+      );
+    }
+  }
+
+  $status = $entity->get('status')->value;
+
+  if (!in_array($status, [
+    Auction::STATUS_OPEN,
+    Auction::STATUS_SCHEDULED,
+  ], TRUE)) {
+    return;
+  }
+
+  // Legacy published auctions require explicit migration.
+  if ($original instanceof Auction
+    && $original->get('status')->value !== Auction::STATUS_DRAFT) {
+    throw new \DomainException(
+      'Existing auction requires commission migration.'
+    );
+  }
+
+  $terms = \Drupal::service(
+    'marketplace_finance.commission_resolver'
+  )->resolve($entity->getSellerProfile());
+
+  $entity->set(
+    'commission_snapshot_bps',
+    $terms['basis_points'],
+  );
+
+  $entity->set(
+    'commission_snapshot_source',
+    $terms['source'],
+  );
+
+  $entity->set(
+    'commission_locked_at',
+    \Drupal::time()->getCurrentTime(),
+  );
+}

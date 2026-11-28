@@ -13,3 +13,11 @@ marketplace_finance.settings:
     _title: 'Marketplace finance settings'
   requirements:
     _permission: 'administer marketplace finance'
+
+marketplace_finance.seller_commissions:
+  path: '/admin/commerce/marketplace-finance/sellers'
+  defaults:
+    _form: '\Drupal\marketplace_finance\Form\SellerCommissionForm'
+    _title: 'Seller commission policies'
+  requirements:
+    _permission: 'administer marketplace finance'

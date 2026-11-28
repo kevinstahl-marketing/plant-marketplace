@@ -34,7 +34,7 @@ final class FinanceSettingsForm extends ConfigFormBase {
       '#field_suffix' => '%',
       '#required' => TRUE,
       '#description' => $this->t(
-        'Estimated commission on the auction merchandise price, excluding shipping and taxes.'
+        'Default commission for newly published auctions. Existing locked rates are unaffected. Excludes shipping and taxes.'
       ),
     ];
 

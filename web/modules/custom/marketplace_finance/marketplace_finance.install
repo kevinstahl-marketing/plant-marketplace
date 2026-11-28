@@ -1,0 +1,69 @@
+<?php
+
+/**
+ * @file
+ * Marketplace Finance installation and updates.
+ */
+
+/**
+ * Installs seller commission overrides and auction snapshots.
+ */
+function marketplace_finance_update_11001(): string {
+  $manager = \Drupal::entityDefinitionUpdateManager();
+
+  foreach ([
+    'marketplace_seller',
+    'marketplace_auction',
+  ] as $type) {
+
+    $entity_type = \Drupal::entityTypeManager()
+      ->getDefinition($type);
+
+    $fields = marketplace_finance_entity_base_field_info(
+      $entity_type
+    );
+
+    foreach ($fields as $name => $definition) {
+      if (!$manager->getFieldStorageDefinition($name, $type)) {
+        $manager->installFieldStorageDefinition(
+          $name,
+          $type,
+          'marketplace_finance',
+          $definition,
+        );
+      }
+    }
+  }
+
+  return 'Installed commission policy fields.';
+}
+
+/**
+ * Backfills commission terms for existing development auctions.
+ */
+function marketplace_finance_update_11002(): string {
+  $database = \Drupal::database();
+
+  $count = $database->update('marketplace_auction')
+    ->fields([
+      'commission_snapshot_bps' => 1000,
+      'commission_snapshot_source' => 'legacy_backfill',
+      'commission_locked_at' => \Drupal::time()->getCurrentTime(),
+    ])
+    ->isNull('commission_snapshot_bps')
+    ->condition('status', [
+      'open',
+      'scheduled',
+      'closed',
+    ], 'IN')
+    ->execute();
+
+  \Drupal::entityTypeManager()
+    ->getStorage('marketplace_auction')
+    ->resetCache();
+
+  return sprintf(
+    'Backfilled commission terms for %d legacy auctions.',
+    $count,
+  );
+}

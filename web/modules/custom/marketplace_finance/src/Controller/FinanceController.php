@@ -74,7 +74,18 @@ final class FinanceController extends ControllerBase {
       $amount = (int) $settlement
         ->get('final_price')->value;
 
-      $split = $calculator->calculate($amount, $rate);
+      $auction = $settlement->get('auction_id')->entity;
+
+      if (!$auction
+        || $auction->get('commission_snapshot_bps')->isEmpty()) {
+        $skipped++;
+        continue;
+      }
+
+      $lockedRate = (int) $auction
+        ->get('commission_snapshot_bps')->value;
+
+      $split = $calculator->calculate($amount, $lockedRate);
 
       $seller = $settlement
         ->get('seller_profile_id')->entity;
@@ -111,6 +122,7 @@ final class FinanceController extends ControllerBase {
         ],
         $seller ? $seller->label() : 'Unknown seller',
         $this->money($amount),
+        ($lockedRate / 100) . '%',
         $this->money($split['commission']),
         $this->money($split['seller_proceeds']),
         $isPaid
@@ -120,8 +132,8 @@ final class FinanceController extends ControllerBase {
     }
 
     $build['notice'] = [
-      '#markup' => '<p><strong>Estimated financial breakdown.</strong> '
-        . 'Uses the current commission rate. Excludes shipping, '
+      '#markup' => '<p><strong>Contractual merchandise breakdown.</strong> '
+        . 'Uses the commission locked at auction publication. Excludes shipping, '
         . 'taxes, processing fees and payout reconciliation. '
         . 'These are not recorded seller balances.</p>',
     ];
@@ -135,6 +147,15 @@ final class FinanceController extends ControllerBase {
       ],
     ];
 
+    $build['seller_policies'] = [
+      '#type' => 'link',
+      '#title' => $this->t('Manage seller commissions'),
+      '#url' => Url::fromRoute('marketplace_finance.seller_commissions'),
+      '#attributes' => [
+        'class' => ['button'],
+      ],
+    ];
+
     $build['summary'] = [
       '#type' => 'table',
       '#header' => [
@@ -142,12 +163,12 @@ final class FinanceController extends ControllerBase {
         $this->t('Value'),
       ],
       '#rows' => [
-        ['Current commission', ($rate / 100) . '%'],
+        ['Default commission for new auctions', ($rate / 100) . '%'],
         ['Paid auction orders', $paidCount],
         ['Orders not fully paid', $pendingCount],
         ['Paid merchandise volume', $this->money($gross)],
-        ['Estimated commission', $this->money($commission)],
-        ['Estimated seller proceeds', $this->money($proceeds)],
+        ['Gross commission', $this->money($commission)],
+        ['Seller merchandise proceeds', $this->money($proceeds)],
         ['Invalid or unsupported records', $skipped],
       ],
     ];
@@ -159,8 +180,9 @@ final class FinanceController extends ControllerBase {
         $this->t('Commerce order'),
         $this->t('Seller'),
         $this->t('Sale price'),
-        $this->t('Est. commission'),
-        $this->t('Est. seller proceeds'),
+        $this->t('Locked rate'),
+        $this->t('Commission'),
+        $this->t('Seller proceeds'),
         $this->t('Payment status'),
       ],
       '#rows' => $rows,

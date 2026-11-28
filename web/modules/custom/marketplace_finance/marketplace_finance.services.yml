@@ -1,0 +1,3 @@
+services:
+  marketplace_finance.commission_calculator:
+    class: Drupal\marketplace_finance\Service\CommissionCalculator

@@ -1,0 +1,11 @@
+marketplace_finance.overview:
+  title: 'Marketplace finance'
+  description: 'Review auction sales and estimated commissions.'
+  route_name: marketplace_finance.overview
+  parent: commerce.admin_commerce
+  weight: 20
+
+marketplace_finance.settings:
+  title: 'Finance settings'
+  route_name: marketplace_finance.settings
+  parent: marketplace_finance.overview

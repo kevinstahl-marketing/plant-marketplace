@@ -1,0 +1,15 @@
+marketplace_finance.overview:
+  path: '/admin/commerce/marketplace-finance'
+  defaults:
+    _controller: '\Drupal\marketplace_finance\Controller\FinanceController::overview'
+    _title: 'Marketplace finance'
+  requirements:
+    _permission: 'administer marketplace finance'
+
+marketplace_finance.settings:
+  path: '/admin/commerce/marketplace-finance/settings'
+  defaults:
+    _form: '\Drupal\marketplace_finance\Form\FinanceSettingsForm'
+    _title: 'Marketplace finance settings'
+  requirements:
+    _permission: 'administer marketplace finance'

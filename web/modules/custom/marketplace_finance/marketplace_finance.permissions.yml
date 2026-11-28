@@ -1,0 +1,3 @@
+administer marketplace finance:
+  title: 'Administer marketplace finance'
+  restrict access: true

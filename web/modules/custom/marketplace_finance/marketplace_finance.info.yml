@@ -1,0 +1,8 @@
+name: Marketplace Finance
+type: module
+description: Marketplace commissions and financial reporting for Commerce orders.
+package: Marketplace
+core_version_requirement: ^11
+dependencies:
+  - marketplace_order:marketplace_order
+  - commerce:commerce_payment

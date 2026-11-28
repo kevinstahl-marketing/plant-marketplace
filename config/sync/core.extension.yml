@@ -44,6 +44,7 @@ module:
   marketplace_auction: 0
   marketplace_cart: 0
   marketplace_catalog: 0
+  marketplace_finance: 0
   marketplace_order: 0
   marketplace_seller: 0
   marketplace_seller_dashboard: 0

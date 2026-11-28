@@ -1,0 +1,7 @@
+marketplace_finance.settings:
+  type: config_object
+  label: 'Marketplace finance settings'
+  mapping:
+    commission_basis_points:
+      type: integer
+      label: 'Commission in basis points'
